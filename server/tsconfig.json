@@ -1,0 +1,14 @@
+{
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+      /* Modules */
+      "rootDir": "src",
+  
+      /* Emit */
+      "outDir": "dist",
+      "noEmitOnError": true /* Disable emitting files if any type checking errors are reported. */
+    },
+    "include": ["src"],
+    "typeRoots": ["./node_modules/@types", "./src/types"]
+  }
+  
