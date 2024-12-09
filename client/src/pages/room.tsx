@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Nav } from '../containers'; 
+import { Nav, Footer } from '../containers'; 
 
 // Countdown Timer Component
 const CountdownTimer: React.FC = () => {
@@ -64,7 +64,7 @@ const EscapeRoom: React.FC = () => {
     <>
     <Nav />
     <div className="min-h-screen bg-stone-900 p-6">
-      <div className="max-w-4xl mx-auto bg-stone-800 p-3 rounded-lg shadow-lg">
+      <div className="mx-auto bg-stone-800 p-3 rounded-lg shadow-lg">
         {/* Layout for riddles and timer on the left */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-2">
           <div className="lg:col-span-2 space-y-6">
@@ -141,7 +141,7 @@ const EscapeRoom: React.FC = () => {
               <button
                 type="submit"
                 onClick={handleSubmit}
-                className="py-2 px-6 bg-blue-500 text-white text-lg rounded-md hover:bg-blue-600"
+                className="py-2 px-6 bg-blue-500 text-white text-lg rounded-md hover:bg-red-600"
               >
                 Unlock the Lock
               </button>
@@ -150,6 +150,7 @@ const EscapeRoom: React.FC = () => {
         </div>
       </div>
     </div>
+    <Footer />
     </>
   );
 };

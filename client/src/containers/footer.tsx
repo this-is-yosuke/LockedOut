@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
           <FooterSection
             title="About Us"
-            content="We offer thrilling escape room experiences to challenge your mind and test your teamwork. Get ready to solve puzzles, uncover secrets, and escape before time runs out!"
+            content="Experience a thrilling solo virtual escape room that will challenge your mind. Solve puzzles, uncover secrets, and escape before time runs out!"
           />
           <FooterSection
             title="Quick Links"

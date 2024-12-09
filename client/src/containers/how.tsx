@@ -3,7 +3,7 @@ import {HowItWorksSection, Step} from '../components'
 
 const How: React.FC = () => {
   return (
-    <section className="bg-stone-900 py-16">
+    <section className="bg-stone-900 py-16" id="about">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* How it Works Text Section */}
         <HowItWorksSection />
@@ -21,7 +21,7 @@ const How: React.FC = () => {
           <Step 
             iconPath="M9 5l7 7-7 7" 
             title="Solve the Puzzles" 
-            description="Work together as a team to decipher clues, solve puzzles, and unlock the mysteries of the room." 
+            description="Use your skills to decipher clues, solve puzzles, and unlock the mysteries of the room." 
           />
 
           {/* Step 3 */}

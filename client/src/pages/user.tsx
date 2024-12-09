@@ -1,5 +1,6 @@
 import { Nav } from '../containers'; // Ensure the correct path for Nav
 import { ProfileCard, RoomCard, SectionTitle } from '../components/';
+import {Footer} from '../containers'
 
 const User: React.FC = () => {
   return (
@@ -52,6 +53,7 @@ const User: React.FC = () => {
 
         </div>
       </section>
+      <Footer />
     </>
   );
 };

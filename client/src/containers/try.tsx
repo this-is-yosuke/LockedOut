@@ -1,7 +1,7 @@
 const Try = () => {
     return (
       <>
-        <section className="py-16 bg-stone-950">
+        <section className="py-16 bg-stone-950" id="try">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Section Title */}
             <div className="text-center mb-12">
