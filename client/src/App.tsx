@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import {Home} from './pages'; // Assuming Home is your home page component
-import './App.css'
+import {Home, Login, User} from './pages'
 
 function App() {
   return (
@@ -9,6 +8,8 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/user" element={<User />} />
         </Routes>
       </div>
     </BrowserRouter>

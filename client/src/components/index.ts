@@ -9,3 +9,6 @@ export { default as HowItWorksSection } from './howItWorksSection';
 export { default as MobileMenu } from './mobileMenu';
 export { default as NavMenu } from './navMenu';
 export { default as NavLogo } from './navLogo';
+export { default as RoomCard } from './roomCard';
+export { default as ProfileCard } from './profileCard';
+export { default as SectionTitle } from './sectionTitle';
