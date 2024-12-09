@@ -1,4 +1,4 @@
-import CTAButton from "./CTAButton";
+import CTAButton from "./CTAbutton";
 
 const HeaderContent = () => {
   return (

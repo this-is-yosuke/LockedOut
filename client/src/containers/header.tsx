@@ -1,5 +1,4 @@
 
-import React from "react";
 import {HeaderOverlay, HeaderContent} from "../components";
 
 const Header = () => {

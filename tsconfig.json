@@ -1,30 +1,32 @@
 {
-    "compilerOptions": {
-      /* Language and Environment */
-      "target": "ES2020",
-  
-      /* Modules */
-      "module": "ESNext",
-      "moduleResolution": "Bundler",
-      "skipLibCheck": true,
-  
-      /* JavaScript Support */
-      "allowJs": true,
-      "checkJs": true,
-  
-      /* Interop Constraints */
-      "esModuleInterop": true,
-      "forceConsistentCasingInFileNames": true,
-  
-      /* Type Checking */
-      "strict": true,
-      "noUnusedLocals": true,
-      "noUnusedParameters": true,
-      "noFallthroughCasesInSwitch": true,
-      "exactOptionalPropertyTypes": true,
-      "noImplicitReturns": true,
-      "noImplicitOverride": true,
-      "useUnknownInCatchVariables": true
-  }
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "skipLibCheck": true,
+    "allowJs": true,
+    "checkJs": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noImplicitOverride": true,
+    "useUnknownInCatchVariables": true
+  },
+  "exclude": [
+    "node_modules",  // Always exclude node_modules
+    "dist",          // Exclude dist folder
+    "client/eslint.config.js",  // Exclude eslint config file in client
+    "server/eslint.config.js",  // If applicable, also exclude in server directory
+    "build",          // Exclude any other directories where the build output goes
+    "**/*.js"         // Exclude any JS files from TypeScript compilation if necessary
+  ],
+  "include": [
+    "client/src/**/*",  // Include all files in the src directory of the client
+    "server/src/**/*"   // If needed, include server files (adjust path as necessary)
+  ]
 }
-  
