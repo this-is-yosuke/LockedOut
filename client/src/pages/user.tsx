@@ -1,12 +1,12 @@
 import { Nav } from '../containers'; // Ensure the correct path for Nav
-import { ProfileCard, RoomCard, SectionTitle} from '../components/';
+import { ProfileCard, RoomCard, SectionTitle } from '../components/';
 
 const User: React.FC = () => {
   return (
     <>
       <Nav />
       <section className="flex items-start justify-center min-h-screen py-12 px-4">
-        <div className="flex bg-gray-800 rounded-lg shadow-lg overflow-hidden w-full max-w-6xl">
+        <div className="flex flex-col lg:flex-row bg-gray-800 rounded-lg shadow-lg overflow-hidden w-full max-w-6xl">
 
           {/* Left Side: User Info */}
           <ProfileCard 
@@ -18,7 +18,7 @@ const User: React.FC = () => {
           />
 
           {/* Right Side: User's Escape Rooms */}
-          <main className="w-2/3 bg-stone-900 p-6">
+          <main className="w-full lg:w-2/3 bg-stone-900 p-6">
             <h2 className="text-3xl font-semibold text-stone-100 mb-6">Your Escape Rooms</h2>
 
             {/* Created Rooms Section */}
