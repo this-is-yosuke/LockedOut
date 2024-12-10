@@ -1,7 +1,6 @@
 import { Model, 
     type InferAttributes, type InferCreationAttributes, type CreationOptional, type Sequelize,
-    DataTypes,
-    ForeignKey} from 'sequelize';
+    DataTypes, ForeignKey} from 'sequelize';
 import type { User } from './user';
 
 export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<Room>> {
