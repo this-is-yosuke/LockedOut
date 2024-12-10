@@ -1,4 +1,6 @@
-import { Nav } from '../containers'; // Ensure correct path for Nav
+import { Nav } from '../containers'; 
+import {Lock} from '../assets'
+
 
 // React.FC (or React.FunctionComponent) is a generic type for functional components
 const Login: React.FC = () => {
@@ -10,7 +12,7 @@ const Login: React.FC = () => {
           {/* Left Side with Lock Logo */}
           <div className="w-1/3 bg-stone-800 flex items-center justify-center p-8">
             <img
-              src="https://via.placeholder.com/100x100?text=Lock"
+              src={Lock}
               alt="Lock Logo"
               className="w-24 h-24"
             />
