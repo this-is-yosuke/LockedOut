@@ -1,5 +1,5 @@
 import { Model,
-    type InferAttributes, type InferCreationAttributes, type CreationOptional, type Sequelize,
+    type InferAttributes, type InferCreationAttributes, type Sequelize,
     DataTypes, ForeignKey } from 'sequelize';
 
     import type { Room } from './room';
