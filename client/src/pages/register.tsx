@@ -1,4 +1,5 @@
-import { Nav } from '../containers'; // Ensure correct path for Nav
+import { Nav, Footer } from '../containers'; // Ensure correct path for Nav
+import {Lock} from '../assets'
 
 const Register: React.FC = () => {
   return (
@@ -9,7 +10,7 @@ const Register: React.FC = () => {
           {/* Left Side with a Logo */}
           <div className="w-1/3 bg-stone-800 flex items-center justify-center p-8">
             <img
-              src="https://via.placeholder.com/100x100?text=Logo"
+              src={Lock}
               alt="Logo"
               className="w-24 h-24"
             />
@@ -104,6 +105,7 @@ const Register: React.FC = () => {
           </div>
         </div>
       </section>
+      <Footer/>
     </>
   );
 };

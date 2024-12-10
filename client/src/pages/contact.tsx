@@ -1,4 +1,5 @@
 import { Nav, Footer } from '../containers'; // Ensure correct path for Nav
+import {Lock} from '../assets'
 
 const Contact: React.FC = () => {
   return (
@@ -9,7 +10,7 @@ const Contact: React.FC = () => {
           {/* Left Side with a Contact Icon */}
           <div className="w-1/3 bg-stone-800 flex items-center justify-center p-8">
             <img
-              src="https://via.placeholder.com/100x100?text=Contact"
+              src={Lock}
               alt="Contact Icon"
               className="w-24 h-24"
             />
