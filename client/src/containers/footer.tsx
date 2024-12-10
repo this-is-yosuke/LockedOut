@@ -1,4 +1,6 @@
 import { FooterBottom, FooterSection, SocialMediaIcons } from "../components";
+import { Link } from 'react-router-dom';
+
 
 const Footer = () => {
   return (
@@ -13,10 +15,16 @@ const Footer = () => {
             title="Quick Links"
             content={
               <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Home</a></li>
+                <li>                <Link to="/" className="text-gray-400 hover:text-white">
+                  Home
+                </Link></li>
                 <li><a href="#rooms" className="text-gray-400 hover:text-white">Rooms</a></li>
-                <li><a href="#contact" className="text-gray-400 hover:text-white">Contact</a></li>
-                <li><a href="#faq" className="text-gray-400 hover:text-white">FAQ</a></li>
+                <li><Link to="/contact" className="text-gray-400 hover:text-white">
+                  Contact
+                </Link></li>
+                <li><Link to="/faq" className="text-gray-400 hover:text-white">
+                  FAQ
+                </Link></li>
               </ul>
             }
           />

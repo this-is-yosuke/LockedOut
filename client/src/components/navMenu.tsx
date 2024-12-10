@@ -11,12 +11,12 @@ const NavMenu: React.FC = () => {
         >
           Home
         </Link>
-        <a href="#about"
+        <a href="/#about"
           className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
         >
           About
         </a>
-        <a href="#try"
+        <a href="/#try"
           className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
         >
           Try A Room
@@ -26,6 +26,12 @@ const NavMenu: React.FC = () => {
           className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
         >
           Login
+        </Link>
+        <Link
+          to="/register"
+          className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Register
         </Link>
       </div>
     </div>
