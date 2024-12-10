@@ -1,14 +1,14 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-      /* Modules */
-      "rootDir": "src",
-  
-      /* Emit */
-      "outDir": "dist",
-      "noEmitOnError": true /* Disable emitting files if any type checking errors are reported. */
-    },
-    "include": ["src"],
-    "typeRoots": ["./node_modules/@types", "./src/types"]
-  }
-  
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "commonjs",
+    "outDir": "./dist",       // Output the compiled files to dist/
+    "rootDir": "./src",       // The source code is in src/
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts"],  // Include TypeScript files in src/
+  "exclude": ["node_modules", "dist", "client"]  // Exclude non-backend folders
+}
