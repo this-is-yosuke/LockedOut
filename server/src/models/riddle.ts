@@ -1,15 +1,15 @@
 import { Model,
-    type InferAttributes, type InferCreationAttributes, type Sequelize,
+    type InferAttributes, type InferCreationAttributes, type CreationOptional, type Sequelize,
     DataTypes, ForeignKey } from 'sequelize';
 
     import type { Room } from './room';
 
     export class Riddle extends Model<InferAttributes<Riddle>, InferCreationAttributes<Riddle>> {
-        declare id: number;
+        declare id: CreationOptional<number>;
         declare name: string;
-        declare description: string;
+        declare content: string;
         declare answer: string;
-        declare order: number;
+        declare position: number;
         declare roomID: ForeignKey<Room['id']>
     }
 
@@ -26,7 +26,7 @@ import { Model,
                     type: DataTypes.STRING,
                     allowNull: false
                 },
-                description: {
+                content: {
                     type: DataTypes.STRING,
                     allowNull: false
                 },
@@ -34,7 +34,7 @@ import { Model,
                     type: DataTypes.STRING,
                     allowNull: false
                 },
-                order: {
+                position: {
                     type: DataTypes.NUMBER,
                     allowNull: false
                 },
