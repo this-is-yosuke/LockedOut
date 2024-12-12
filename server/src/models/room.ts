@@ -8,6 +8,7 @@ export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<R
     declare title: string;
     declare description: string;
     declare type: string;
+    declare difficulty: number;
     declare creatorID: ForeignKey<User['id']>;
 }
 
@@ -30,6 +31,10 @@ export function RoomFactory(sequelize: Sequelize) {
             },
             type: {
                 type: DataTypes.STRING,
+                allowNull: false
+            },
+            difficulty: {
+                type: DataTypes.NUMBER,
                 allowNull: false
             },
         },
