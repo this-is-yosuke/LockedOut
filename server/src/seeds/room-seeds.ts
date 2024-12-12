@@ -1,6 +1,6 @@
 import { Room } from '../models/room.js'
 
-export const seedRoom = async () => {
+export const seedRooms = async () => {
     await Room.bulkCreate([
         // Room has title, description, type, creatorID
         /* Descriptive riddles provide a few sentences of context leading up to the question. Witty questions are
