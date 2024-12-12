@@ -1,8 +1,8 @@
 import { seedUsers } from './user-seeds';
-import {seedAttempts} from './attempt-seeds';
 import { seedRooms } from './room-seeds';
 import {seedRiddles} from './riddle-seeds';
 import sequelize from "../config/connection.js";
+// import {seedAttempts} from './attempt-seeds'; Being an intermediary table, sequelize makes the table for us
 
 const seedAll = async (): Promise<void> => {
     try{
@@ -12,8 +12,9 @@ const seedAll = async (): Promise<void> => {
         await seedUsers();
         console.log(`\n USERS SEEDED \n`);
 
-        await seedAttempts();
-        console.log(`\n ATTEMPTS SEEDED \n`);
+        // I'll hold onto this in case we want to customize the Attempt table
+        // await seedAttempts();
+        // console.log(`\n ATTEMPTS SEEDED \n`);
   
         await seedRooms();
         console.log(`\n ROOMS SEEDED \n`);
