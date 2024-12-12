@@ -1,6 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import {EscapeRoom, Home, Login, User, FAQ, Register, Contact} from './pages'
+import {EscapeRoom, Home, Login, User, FAQ, Register, Contact, CreateRoom} from './pages'
 
 function App() {
   return (
@@ -14,6 +14,7 @@ function App() {
           <Route path="/faq" element={<FAQ />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/createroom" element={<CreateRoom />} />
         </Routes>
       </div>
     </BrowserRouter>
