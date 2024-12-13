@@ -1,12 +1,31 @@
 import { Nav, Footer } from '../containers';
-import { Lock } from '../assets';
 import { useState } from 'react';
+import axios from 'axios';
+
+interface FormData {
+  roomName: string;
+  roomDescription: string;
+  roomDifficulty:string;
+  roomImage: string;
+  roomType: string;
+  riddleOneText: string;
+  riddleOneAnswer: string;
+  riddleTwoText: string;
+  riddleTwoAnswer: string;
+  riddleThreeText: string;
+  riddleThreeAnswer: string;
+  riddleFourText: string;
+  riddleFourAnswer: string;
+  [key: string]: string;
+}
 
 const CreateRoom: React.FC = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     roomName: '',
     roomDescription: '',
+    roomDifficulty: '',
     roomImage: '',
+    roomType: '',
     riddleOneText: '',
     riddleOneAnswer: '',
     riddleTwoText: '',
@@ -15,10 +34,52 @@ const CreateRoom: React.FC = () => {
     riddleThreeAnswer: '',
     riddleFourText: '',
     riddleFourAnswer: '',
-    roomType: '',
   });
 
   const [errors, setErrors] = useState({} as Record<string, string>);
+  const [loadingRiddles, setLoadingRiddles] = useState(false); // to show a loading state
+  const [riddleError, setRiddleError] = useState('');
+
+  // Function to fetch a riddle from the API and update the correct field
+  const fetchRiddle = async (riddleNumber: number) => {
+    setLoadingRiddles(true); // Set loading state to true when fetching
+    try {
+      const response = await axios.get('https://riddles-api.vercel.app/random');
+      const riddle = response.data;
+
+      if (riddle && riddle.riddle && riddle.answer) {
+        const newFormData = { ...formData };
+
+        // Dynamically assign riddle and answer based on the riddleNumber
+        if (riddleNumber === 1) {
+          newFormData.riddleOneText = riddle.riddle;
+          newFormData.riddleOneAnswer = riddle.answer;
+        } else if (riddleNumber === 2) {
+          newFormData.riddleTwoText = riddle.riddle;
+          newFormData.riddleTwoAnswer = riddle.answer;
+        } else if (riddleNumber === 3) {
+          newFormData.riddleThreeText = riddle.riddle;
+          newFormData.riddleThreeAnswer = riddle.answer;
+        } else if (riddleNumber === 4) {
+          newFormData.riddleFourText = riddle.riddle;
+          newFormData.riddleFourAnswer = riddle.answer;
+        }
+
+        setFormData(newFormData);
+        setRiddleError(''); // Clear any previous error
+      } else {
+        setRiddleError('No riddles found in response.');
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setRiddleError(error.message);
+      } else {
+        setRiddleError('An unexpected error occurred.');
+      }
+    } finally {
+      setLoadingRiddles(false); // Set loading state to false once done
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -27,7 +88,6 @@ const CreateRoom: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Validate inputs
     let valid = true;
     let newErrors = {} as Record<string, string>;
 
@@ -46,10 +106,44 @@ const CreateRoom: React.FC = () => {
       newErrors.roomType = 'Room type is required';
     }
 
+    // Validate answers based on room type
+    const validateAnswer = (answer: string, type: string) => {
+      if (type === 'letter' && !/^[A-Za-z]$/.test(answer)) {
+        return 'You have selected a letter type lock. Your answer must be a single letter';
+      }
+      if (type === 'number' && !/^[0-9]$/.test(answer)) {
+        return 'You have selected a number type lock. Answer must be a number between 0-9';
+      }
+      if (type === 'word' && !/^[A-Za-z]+$/.test(answer)) {
+        return 'You have selected a word type lock. Answer must be a single word';
+      }
+      return '';
+    };
+
+    // Check each riddle answer
+    if (formData.riddleOneAnswer && validateAnswer(formData.riddleOneAnswer, formData.roomType)) {
+      newErrors.riddleOneAnswer = validateAnswer(formData.riddleOneAnswer, formData.roomType);
+      valid = false;
+    }
+
+    if (formData.riddleTwoAnswer && validateAnswer(formData.riddleTwoAnswer, formData.roomType)) {
+      newErrors.riddleTwoAnswer = validateAnswer(formData.riddleTwoAnswer, formData.roomType);
+      valid = false;
+    }
+
+    if (formData.riddleThreeAnswer && validateAnswer(formData.riddleThreeAnswer, formData.roomType)) {
+      newErrors.riddleThreeAnswer = validateAnswer(formData.riddleThreeAnswer, formData.roomType);
+      valid = false;
+    }
+
+    if (formData.riddleFourAnswer && validateAnswer(formData.riddleFourAnswer, formData.roomType)) {
+      newErrors.riddleFourAnswer = validateAnswer(formData.riddleFourAnswer, formData.roomType);
+      valid = false;
+    }
+
     setErrors(newErrors);
 
     if (valid) {
-      // Handle form submission, authentication, etc.
       console.log('Form submitted', formData);
     }
   };
@@ -59,16 +153,12 @@ const CreateRoom: React.FC = () => {
       <Nav />
       <section className="flex items-center justify-center min-h-screen m-6">
         <div className="flex bg-gray-800 rounded-lg shadow-lg overflow-hidden w-full max-w-4xl">
-
-          {/* Create Room Form Section */}
           <div className="w-full p-8 bg-stone-800">
             <h2 className="text-3xl font-semibold mb-6 text-stone-100">Create a New Room</h2>
             <form onSubmit={handleSubmit}>
               {/* Room Name Field */}
               <div className="mb-4">
-                <label htmlFor="roomName" className="block text-lg mb-2 text-stone-200">
-                  Room Name
-                </label>
+                <label htmlFor="roomName" className="block text-lg mb-2 text-stone-200">Room Name</label>
                 <input
                   type="text"
                   id="roomName"
@@ -84,9 +174,7 @@ const CreateRoom: React.FC = () => {
 
               {/* Room Description Field */}
               <div className="mb-4">
-                <label htmlFor="roomDescription" className="block text-lg mb-2 text-stone-200">
-                  Room Description
-                </label>
+                <label htmlFor="roomDescription" className="block text-lg mb-2 text-stone-200">Room Description</label>
                 <textarea
                   id="roomDescription"
                   name="roomDescription"
@@ -100,27 +188,52 @@ const CreateRoom: React.FC = () => {
                 {errors.roomDescription && <p className="text-red-500">{errors.roomDescription}</p>}
               </div>
 
-              {/* Room Image Field */}
-              <div className="mb-4">
-                <label htmlFor="roomImage" className="block text-lg mb-2 text-stone-200">
-                  Room Image URL
-                </label>
-                <input
-                  type="text"
-                  id="roomImage"
-                  name="roomImage"
-                  value={formData.roomImage}
+             {/* Room Type Field */}
+             <div className="mb-4">
+                <label htmlFor="roomDifficulty" className="block text-lg mb-2 text-stone-200">Room Difficulty(1 easy - 5 Difficult)</label>
+                <select
+                  id="roomDifficulty"
+                  name="roomDifficulty"
+                  value={formData.roomType}
                   onChange={handleChange}
                   className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter the room image URL"
-                />
+                  required
+                >
+                  <option value="">Select Room Difficulty</option>
+                  <option value="number">1</option>
+                  <option value="letter">2</option>
+                  <option value="word">3</option>
+                  <option value="word">4</option>
+                  <option value="word">5</option>
+                </select>
+                {errors.roomType && <p className="text-red-500">{errors.roomType}</p>}
               </div>
-                <hr />
-              {/* Riddle One Text Field */}
+
+
+              {/* Room Type Field */}
               <div className="mb-4">
-                <label htmlFor="riddleOneText" className="block text-lg mb-2 text-stone-200">
-                  Riddle One Text
-                </label>
+                <label htmlFor="roomType" className="block text-lg mb-2 text-stone-200">Room Type</label>
+                <select
+                  id="roomType"
+                  name="roomType"
+                  value={formData.roomType}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                >
+                  <option value="">Select Room Type</option>
+                  <option value="number">Number</option>
+                  <option value="letter">Letter</option>
+                  <option value="word">Word</option>
+                </select>
+                {errors.roomType && <p className="text-red-500">{errors.roomType}</p>}
+              </div>
+
+              <hr className="m-8" />
+
+              {/* Riddle 1 */}
+              <div className="mb-4">
+                <label htmlFor="riddleOneText" className="block text-lg mb-2 text-stone-200">Riddle One Text</label>
                 <textarea
                   id="riddleOneText"
                   name="riddleOneText"
@@ -131,13 +244,12 @@ const CreateRoom: React.FC = () => {
                   rows={2}
                   required
                 />
+                {riddleError && <p className="text-red-500">{riddleError}</p>}
               </div>
 
-              {/* Riddle One Answer Field */}
+              {/* Riddle Answer 1 */}
               <div className="mb-4">
-                <label htmlFor="riddleOneAnswer" className="block text-lg mb-2 text-stone-200">
-                  Riddle One Answer
-                </label>
+                <label htmlFor="riddleOneAnswer" className="block text-lg mb-2 text-stone-200">Riddle One Answer</label>
                 <input
                   type="text"
                   id="riddleOneAnswer"
@@ -145,17 +257,28 @@ const CreateRoom: React.FC = () => {
                   value={formData.riddleOneAnswer}
                   onChange={handleChange}
                   className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter the answer to the first riddle"
+                  placeholder="Answer"
                   required
                 />
+                {errors.riddleOneAnswer && <p className="text-red-500">{errors.riddleOneAnswer}</p>}
               </div>
 
-                <hr />
-              {/* Riddle Two Text Field */}
+              {/* Fetch Riddle Button 1 */}
+              <button
+                type="button"
+                onClick={() => fetchRiddle(1)} // Call fetchRiddle for riddle 1
+                className="w-auto p-4 py-2 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-md mt-4"
+                disabled={loadingRiddles}
+              >
+                {loadingRiddles ? 'Loading...' : 'Generate Riddle'}
+              </button>
+
+              <hr className="m-8" />
+
+
+              {/* Riddle 2 */}
               <div className="mb-4">
-                <label htmlFor="riddleTwoText" className="block text-lg mb-2 text-stone-200">
-                  Riddle Two Text
-                </label>
+                <label htmlFor="riddleTwoText" className="block text-lg mb-2 text-stone-200">Riddle Two Text</label>
                 <textarea
                   id="riddleTwoText"
                   name="riddleTwoText"
@@ -166,13 +289,12 @@ const CreateRoom: React.FC = () => {
                   rows={2}
                   required
                 />
+                {riddleError && <p className="text-red-500">{riddleError}</p>}
               </div>
 
-              {/* Riddle Two Answer Field */}
+              {/* Riddle Answer 2 */}
               <div className="mb-4">
-                <label htmlFor="riddleTwoAnswer" className="block text-lg mb-2 text-stone-200">
-                  Riddle Two Answer
-                </label>
+                <label htmlFor="riddleTwoAnswer" className="block text-lg mb-2 text-stone-200">Riddle Two Answer</label>
                 <input
                   type="text"
                   id="riddleTwoAnswer"
@@ -180,17 +302,28 @@ const CreateRoom: React.FC = () => {
                   value={formData.riddleTwoAnswer}
                   onChange={handleChange}
                   className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter the answer to the second riddle"
+                  placeholder="Answer"
                   required
                 />
+                {errors.riddleTwoAnswer && <p className="text-red-500">{errors.riddleTwoAnswer}</p>}
               </div>
 
-                <hr />
-              {/* Riddle Three Text Field */}
+              {/* Fetch Riddle Button 2 */}
+              <button
+                type="button"
+                onClick={() => fetchRiddle(2)} // Call fetchRiddle for riddle 2
+                className="w-auto p-4 py-2 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-md mt-4"
+                disabled={loadingRiddles}
+              >
+                {loadingRiddles ? 'Loading...' : 'Generate Riddle'}
+              </button>
+
+              <hr className="m-8" />
+
+
+              {/* Riddle 3 */}
               <div className="mb-4">
-                <label htmlFor="riddleThreeText" className="block text-lg mb-2 text-stone-200">
-                  Riddle Three Text
-                </label>
+                <label htmlFor="riddleThreeText" className="block text-lg mb-2 text-stone-200">Riddle Three Text</label>
                 <textarea
                   id="riddleThreeText"
                   name="riddleThreeText"
@@ -201,13 +334,12 @@ const CreateRoom: React.FC = () => {
                   rows={2}
                   required
                 />
+                {riddleError && <p className="text-red-500">{riddleError}</p>}
               </div>
 
-              {/* Riddle Three Answer Field */}
+              {/* Riddle Answer 3 */}
               <div className="mb-4">
-                <label htmlFor="riddleThreeAnswer" className="block text-lg mb-2 text-stone-200">
-                  Riddle Three Answer
-                </label>
+                <label htmlFor="riddleThreeAnswer" className="block text-lg mb-2 text-stone-200">Riddle Three Answer</label>
                 <input
                   type="text"
                   id="riddleThreeAnswer"
@@ -215,80 +347,88 @@ const CreateRoom: React.FC = () => {
                   value={formData.riddleThreeAnswer}
                   onChange={handleChange}
                   className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter the answer to the third riddle"
+                  placeholder="Answer"
                   required
                 />
+                {errors.riddleThreeAnswer && <p className="text-red-500">{errors.riddleThreeAnswer}</p>}
               </div>
 
-            <hr />
-{/* Riddle Four Text Field */}
-<div className="mb-4">
-  <label htmlFor="riddleFourText" className="block text-lg mb-2 text-stone-200">
-    Riddle Four Text
-  </label>
-  <textarea
-    id="riddleFourText"
-    name="riddleFourText"
-    value={formData.riddleFourText}
-    onChange={handleChange}
-    className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    placeholder="Enter the fourth riddle"
-    rows={2}
-    required
-  />
-</div>
+            
 
-{/* Riddle Four Answer Field */}
-<div className="mb-4">
-  <label htmlFor="riddleFourAnswer" className="block text-lg mb-2 text-stone-200">
-    Riddle Four Answer
-  </label>
-  <input
-    type="text"
-    id="riddleFourAnswer"
-    name="riddleFourAnswer"
-    value={formData.riddleFourAnswer}
-    onChange={handleChange}
-    className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    placeholder="Enter the answer to the fourth riddle"
-    required
-  />
-</div>
+              {/* Fetch Riddle Button 3 */}
+              <button
+                type="button"
+                onClick={() => fetchRiddle(3)} // Call fetchRiddle for riddle 3
+                className="w-auto p-4 py-2 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-md mt-4"
+                disabled={loadingRiddles}
+              >
+                {loadingRiddles ? 'Loading...' : 'Generate Riddle'}
+              </button>
 
-{/* Room Type Field */}
-<div className="mb-4">
-  <label htmlFor="roomType" className="block text-lg mb-2 text-stone-200">
-    Room Type
-  </label>
-  <select
-    id="roomType"
-    name="roomType"
-    value={formData.roomType}
-    onChange={handleChange}
-    className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    required
-  >
-    <option value="">Select Room Type</option>
-    <option value="number">Number</option>
-    <option value="letter">Letter</option>
-  </select>
-  {errors.roomType && <p className="text-red-500">{errors.roomType}</p>}
-</div>
 
-{/* Submit Button */}
-<button
-  type="submit"
-  className="w-full p-3 bg-red-500 rounded-lg text-white text-lg font-semibold hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500"
->
-  Create Room
-</button>
-</form>
-</div>
-</div>
-</section>
-<Footer />
-</>
-);
+              <hr className="m-8" />
+
+
+              {/* Riddle 4 */}
+              <div className="mb-4">
+                <label htmlFor="riddleFourText" className="block text-lg mb-2 text-stone-200">Riddle Four Text</label>
+                <textarea
+                  id="riddleFourText"
+                  name="riddleFourText"
+                  value={formData.riddleFourText}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter the fourth riddle"
+                  rows={2}
+                  required
+                />
+                {riddleError && <p className="text-red-500">{riddleError}</p>}
+              </div>
+
+              {/* Riddle Answer 4 */}
+              <div className="mb-4">
+                <label htmlFor="riddleFourAnswer" className="block text-lg mb-2 text-stone-200">Riddle Four Answer</label>
+                <input
+                  type="text"
+                  id="riddleFourAnswer"
+                  name="riddleFourAnswer"
+                  value={formData.riddleFourAnswer}
+                  onChange={handleChange}
+                  className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Answer"
+                  required
+                />
+                {errors.riddleFourAnswer && <p className="text-red-500">{errors.riddleFourAnswer}</p>}
+              </div>
+
+
+              {/* Fetch Riddle Button 4 */}
+              <button
+                type="button"
+                onClick={() => fetchRiddle(4)} // Call fetchRiddle for riddle 4
+                className="w-auto p-4 p-4 py-2 bg-green-500 text-white text-lg font-semibold rounded-lg shadow-md mt-4"
+                disabled={loadingRiddles}
+              >
+                {loadingRiddles ? 'Loading...' : 'Generate Riddle'}
+              </button>
+
+              <hr className="m-8" />
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full py-3 bg-blue-500 text-white text-lg font-semibold rounded-lg shadow-md"
+                disabled={loadingRiddles} // Disable button while loading riddles
+              >
+                {loadingRiddles ? 'Loading...' : 'Create Room'}
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+      <Footer />
+    </>
+  );
 };
 
 export default CreateRoom;

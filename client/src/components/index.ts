@@ -12,3 +12,4 @@ export { default as NavLogo } from './navLogo';
 export { default as RoomCard } from './roomCard';
 export { default as ProfileCard } from './profileCard';
 export { default as SectionTitle } from './sectionTitle';
+export { default as RiddleGenerator } from './riddleGenerator';
