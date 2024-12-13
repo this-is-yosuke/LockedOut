@@ -233,7 +233,7 @@ const CreateRoom: React.FC = () => {
 
               {/* Riddle 1 */}
               <div className="mb-4">
-                <label htmlFor="riddleOneText" className="block text-lg mb-2 text-stone-200">Riddle One Text</label>
+                <label htmlFor="riddleOneText" className="block text-lg mb-2 text-stone-200">Riddle One </label>
                 <textarea
                   id="riddleOneText"
                   name="riddleOneText"
@@ -278,7 +278,7 @@ const CreateRoom: React.FC = () => {
 
               {/* Riddle 2 */}
               <div className="mb-4">
-                <label htmlFor="riddleTwoText" className="block text-lg mb-2 text-stone-200">Riddle Two Text</label>
+                <label htmlFor="riddleTwoText" className="block text-lg mb-2 text-stone-200">Riddle Two </label>
                 <textarea
                   id="riddleTwoText"
                   name="riddleTwoText"
@@ -323,7 +323,7 @@ const CreateRoom: React.FC = () => {
 
               {/* Riddle 3 */}
               <div className="mb-4">
-                <label htmlFor="riddleThreeText" className="block text-lg mb-2 text-stone-200">Riddle Three Text</label>
+                <label htmlFor="riddleThreeText" className="block text-lg mb-2 text-stone-200">Riddle Three </label>
                 <textarea
                   id="riddleThreeText"
                   name="riddleThreeText"
@@ -371,7 +371,7 @@ const CreateRoom: React.FC = () => {
 
               {/* Riddle 4 */}
               <div className="mb-4">
-                <label htmlFor="riddleFourText" className="block text-lg mb-2 text-stone-200">Riddle Four Text</label>
+                <label htmlFor="riddleFourText" className="block text-lg mb-2 text-stone-200">Riddle Four </label>
                 <textarea
                   id="riddleFourText"
                   name="riddleFourText"
