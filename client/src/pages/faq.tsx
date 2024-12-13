@@ -9,19 +9,19 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    question: "How does it work?",
+    question: "What is Locked Out",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+      "Locked Out is a virtual escape room where your goal is not to escape from a room, but to unlock a lock. You will have 30 minutes to solve a series of puzzles, find clues, and decipher a 4-digit code, letter sequence, or word. If you unlock the code in time, you win!",
   },
   {
-    question: "How do I create my own escape room?",
+    question: "How do I start a game?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+      "Just sign in, select the escape room you want to play, solve the riddles, and enter your answers into the input fields. Once you've solved them all, click the unlock button.",
   },
   {
-    question: "Can other people play my escape room?",
+    question: "Can I create my own escape room?",
     answer:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+      "Yes! Just sign in, go to your profile, and click the create a new room button. Then fill out the form. ",
   },
   // Add more FAQ items here
 ];
