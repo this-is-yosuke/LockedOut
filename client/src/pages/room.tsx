@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Nav, Footer } from '../containers'; 
+import { Lock } from '../assets';
 
 // Countdown Timer Component
 const CountdownTimer: React.FC = () => {
@@ -93,7 +94,7 @@ const EscapeRoom: React.FC = () => {
 
             {/* Lock Image */}
             <div className="text-center">
-              <img src="https://via.placeholder.com/150?text=Lock" alt="Lock" className="mx-auto" />
+              <img src={Lock} alt="Lock" className="mx-auto max-h-32" />
             </div>
 
             {/* Form to Unlock the Lock */}
