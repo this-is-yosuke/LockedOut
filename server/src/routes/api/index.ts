@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { userRoutes } from './userRoutes.js';
-import { roomRoutes } from './roomRoutes.js';
-import { riddleRoutes } from './riddleRoutes.js';
+import { userRouter } from './userRoutes.js';
+import { roomRouter } from './roomRoutes.js';
+import { riddleRouter } from './riddleRoutes.js';
 
 const router = Router();
 
-router.use('/users', userRoutes);
-router.use('/rooms', roomRoutes);
-router.use('/riddles', riddleRoutes);
+router.use('/users', userRouter);
+router.use('/rooms', roomRouter);
+router.use('/riddles', riddleRouter);
 
 export default router;
