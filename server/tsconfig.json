@@ -1,13 +1,8 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
-    "target": "ES6",
-    "module": "commonjs",
-    "outDir": "./dist",       // Output the compiled files to dist/
     "rootDir": "./src",       // The source code is in src/
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true
+    "outDir": "./dist",       // Output the compiled files to dist/
   },
   "include": ["src/**/*.ts"],  // Include TypeScript files in src/
   "exclude": ["node_modules", "dist", "client"]  // Exclude non-backend folders
