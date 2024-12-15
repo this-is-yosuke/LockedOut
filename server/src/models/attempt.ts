@@ -33,7 +33,6 @@ export function AttemptFactory(sequelize: Sequelize){
             },
             attemptNumber: {
                 type: DataTypes.INTEGER,
-                autoIncrement: true,
                 allowNull: false
             },
             isSuccessful: {
