@@ -1,6 +1,6 @@
-import { seedUsers } from './user-seeds';
-import { seedRooms } from './room-seeds';
-import {seedRiddles} from './riddle-seeds';
+import { seedUsers } from './user-seeds.js';
+import { seedRooms } from './room-seeds.js';
+import {seedRiddles} from './riddle-seeds.js';
 import sequelize from "../config/connection.js";
 // import {seedAttempts} from './attempt-seeds'; Being an intermediary table, sequelize makes the table for us
 
