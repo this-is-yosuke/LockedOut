@@ -13,7 +13,7 @@ interface RiddlePayload {
 }
 
 // Middleware function to authenticate JWT token
-export const RiddleToken = (req: Request, res: Response, next: NextFunction) => {
+export const riddleToken = (req: Request, res: Response, next: NextFunction) => {
     // Get the authorization header from the request
     const riddleHeader = req.headers.authorization;
 

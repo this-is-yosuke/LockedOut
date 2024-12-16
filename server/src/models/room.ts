@@ -1,5 +1,5 @@
 import { Model, 
-    type InferAttributes, type InferCreationAttributes, type CreationOptional, type Sequelize,
+    type InferAttributes, type InferCreationAttributes, type CreationOptional, Sequelize,
     DataTypes, ForeignKey} from 'sequelize';
 import type { User } from './user';
 
@@ -34,13 +34,13 @@ export function RoomFactory(sequelize: Sequelize) {
                 allowNull: false
             },
             difficulty: {
-                type: DataTypes.NUMBER,
+                type: DataTypes.INTEGER,
                 allowNull: false
             },
         },
         {
-            tableName: 'room',
             sequelize,
+            tableName: 'room',
         }
     );
     return Room;
