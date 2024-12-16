@@ -1,5 +1,5 @@
 import { Model,
-    type InferAttributes, type InferCreationAttributes, type CreationOptional, type Sequelize,
+    type InferAttributes, type InferCreationAttributes, type CreationOptional, Sequelize,
     DataTypes, ForeignKey } from 'sequelize';
 
     import type { Room } from './room';
@@ -35,7 +35,7 @@ import { Model,
                     allowNull: false
                 },
                 position: {
-                    type: DataTypes.NUMBER,
+                    type: DataTypes.INTEGER,
                     allowNull: false
                 },
 
