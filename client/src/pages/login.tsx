@@ -1,6 +1,5 @@
 import { Nav } from '../containers'; 
-import {Lock} from '../assets'
-
+import Lock from '../assets/lock.png';
 
 // React.FC (or React.FunctionComponent) is a generic type for functional components
 const Login: React.FC = () => {

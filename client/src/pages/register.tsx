@@ -1,5 +1,5 @@
 import { Nav, Footer } from '../containers'; // Ensure correct path for Nav
-import {Lock} from '../assets'
+import Lock from '../assets/lock.png';
 
 const Register: React.FC = () => {
   return (
