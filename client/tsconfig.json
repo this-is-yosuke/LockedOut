@@ -7,6 +7,6 @@
   "compilerOptions": {
     "lib": ["dom", "esnext"],
     "strict": true,
-    "jsx": "react"
+    "jsx": "react-jsx"
   }
 }
