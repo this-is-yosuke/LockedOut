@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Nav, Footer } from '../containers'; 
-import { Lock } from '../assets';
+import Lock from '../assets/lock.png';
 
 // Countdown Timer Component
 const CountdownTimer: React.FC = () => {
