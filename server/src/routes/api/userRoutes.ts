@@ -1,6 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { User } from '../../models/user.js';
+import { User, Room } from '../../models/index.js';
 
 const router = express.Router();
 
@@ -8,6 +8,8 @@ const router = express.Router();
 router.get('/', async (_req: Request, res: Response) => {
     try {
         const users = await User.findAll({
+            include: [{model: Room, as: 'rooms'}], 
+            // room model goes in the brackets
             attributes: { exclude: ['password'] }
         });
         res.json(users);
