@@ -6,7 +6,7 @@ dotenv.config();
 import express from 'express';
 import sequelize from './config/connection.js';
 import routes from './routes/index.js';
-import { roomRouter } from './routes/api/roomRoutes'; // Import the room routes
+import { roomRouter } from './routes/api/roomRoutes.js'; // Import the room routes
 
 
 const app = express();

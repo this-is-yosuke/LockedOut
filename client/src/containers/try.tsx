@@ -6,42 +6,69 @@ interface Room {
   id: number;
   roomName: string;
   roomDescription: string;
-  roomImage: string;
+  roomImage: string | null;
   roomDifficulty: number;
   winRate: number;
   creator: string;
 }
 
 const Try = () => {
-  const [room, setRoom] = useState<Room | null>(null);  // Now using a single room, so type is `Room | null`
-  const [loading, setLoading] = useState<boolean>(true);
+  const [room, setRoom] = useState<Room | null>(null); // State to store room data
+  const [loading, setLoading] = useState<boolean>(true); // State for loading status
+  const [error, setError] = useState<string | null>(null); // State to store error message if any
 
-  // Function to fetch the room data (assuming room ID is 1)
+  // Function to fetch the room data by ID (assuming ID is 1)
   const fetchRoomById = async (id: number) => {
-    console.log("room loading");
+    console.log("Trying to fetch room with ID:", id);
     try {
-      const response = await axios.get(`/api/room/${id}`);
-      setRoom(response.data); // Set the fetched room into state
-      setLoading(false); // Done loading
-    } catch (error) {
+      // Updated API endpoint to match your backend route
+      console.log(`Making GET request to /api/rooms/${id}`);
+      const response = await axios.get(`/api/rooms/${id}`);
+      
+      console.log("Received response:", response);
+      // Map the response data to match your interface structure
+      const fetchedRoom = {
+        id: response.data.id,
+        roomName: response.data.title, // Mapping backend title to frontend roomName
+        roomDescription: response.data.description, // Mapping backend description to frontend roomDescription
+        roomImage: null, // Assuming you don't have an image field in backend
+        roomDifficulty: response.data.difficulty, // Mapping backend difficulty to frontend roomDifficulty
+        winRate: 50, // Placeholder winRate as it's not provided in the backend
+        creator: 'Unknown', // Placeholder creator
+      };
+      
+      setRoom(fetchedRoom); // Set room data into state
+      setLoading(false); // Set loading to false after data is fetched
+      console.log("Room data set to state:", fetchedRoom);
+    } catch (error: any) {
       console.error('Error fetching room:', error);
-      setLoading(false);
+      setError('Error fetching room data'); // Set error message
+      setLoading(false); // Set loading to false after error
+      console.log("Error occurred while fetching room data:", error.message);
     }
   };
 
-  // Fetch the room when the component mounts
   useEffect(() => {
-    fetchRoomById(0); // Assuming room ID is 1
-  }, []); // Empty dependency array to run once when component mounts
+    console.log("Component mounted, calling fetchRoomById with ID 1");
+    fetchRoomById(1); // Call the fetch function with room ID 1 when the component mounts
+  }, []); // Empty dependency array ensures it runs once when component mounts
 
   if (loading) {
-    return <div>Loading room...</div>; // Show loading state while fetching data
+    console.log("Loading room data...");
+    return <div>Loading room...</div>; // Display loading state while fetching data
   }
 
-  // If no room is found, display a message
-  if (!room) {
-    return <div>No room found!</div>;
+  if (error) {
+    console.log("Error state:", error);
+    return <div>{error}</div>; // Display error message if fetching fails
   }
+
+  if (!room) {
+    console.log("No room data found");
+    return <div>No room found!</div>; // Display error if room is not found
+  }
+
+  console.log("Rendering room:", room);
 
   return (
     <section className="py-16 bg-stone-950" id="try">
@@ -57,7 +84,7 @@ const Try = () => {
         {/* Room Card */}
         <div className="bg-stone-800 rounded-lg shadow-lg overflow-hidden">
           <img
-            src={room.roomImage || 'https://via.placeholder.com/600x400'} // Use room image if available
+            src={room.roomImage || 'https://via.placeholder.com/600x400'} // Use placeholder if image is missing
             alt={room.roomName}
             className="w-full h-48 object-cover"
           />
