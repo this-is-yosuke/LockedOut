@@ -5,7 +5,7 @@ import axios from 'axios';
 interface FormData {
   roomName: string;
   roomDescription: string;
-  roomDifficulty:string;
+  roomDifficulty: number;
   roomImage: string;
   roomType: string;
   riddleOneText: string;
@@ -16,14 +16,14 @@ interface FormData {
   riddleThreeAnswer: string;
   riddleFourText: string;
   riddleFourAnswer: string;
-  [key: string]: string;
+  [key: string]: string | number;
 }
 
 const CreateRoom: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     roomName: '',
     roomDescription: '',
-    roomDifficulty: '',
+    roomDifficulty: 0,
     roomImage: '',
     roomType: '',
     riddleOneText: '',
