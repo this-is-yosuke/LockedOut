@@ -10,6 +10,7 @@ export const seedDatabase = async () => {
     });
     
     const rooms = await Room.bulkCreate(roomSeedData, {
+        individualHooks: true,
         returning: true,
         validate: true,
     });
@@ -17,6 +18,7 @@ export const seedDatabase = async () => {
     console.log("\n Users and Rooms are seeded \n");
     
     await Riddle.bulkCreate(riddleSeedData, {
+        individualHooks: true,
         returning: true,
         validate: true,
     });
