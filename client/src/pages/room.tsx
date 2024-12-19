@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Nav, Footer } from '../containers'; 
+import { Nav, Footer } from '../containers';
 import Lock from '../assets/lock.png';
+import axios from 'axios';
 
 // Countdown Timer Component
 const CountdownTimer: React.FC = () => {
@@ -37,6 +38,34 @@ const EscapeRoom: React.FC = () => {
     riddle3: '',
     riddle4: '',
   });
+  const [riddles, setRiddles] = useState<any[]>([]); // State for riddles
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchRiddles = async (roomId: number) => {
+    try {
+      const response = await axios.get(`/api/riddles/${roomId}`);
+      console.log("Fetched riddles:", response.data); // Log the response
+
+      if (Array.isArray(response.data) && response.data.length > 0) {
+        setRiddles(response.data); // Set riddles state if valid
+      } else {
+        console.error("No riddles found for room ID", roomId);
+        setRiddles([]); // Set an empty array if no riddles
+      }
+
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching riddles:", err);
+      setError('Error fetching riddles');
+      setLoading(false);
+    }
+  };
+
+  // Fetch riddles for room 1 on page load
+  useEffect(() => {
+    fetchRiddles(1); // Hardcoded room ID for now (room 1)
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -61,97 +90,105 @@ const EscapeRoom: React.FC = () => {
     }
   };
 
+  console.log("Rendering riddles:", riddles); // Log riddles before rendering
+
+  if (loading) {
+    return <div>Loading riddles...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
   return (
     <>
-    <Nav />
-    <div className="min-h-screen bg-stone-900 p-6">
-      <div className="mx-auto bg-stone-800 p-3 rounded-lg shadow-lg">
-        {/* Layout for riddles and timer on the left */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-2">
-          <div className="lg:col-span-2 space-y-6">
-            {/* Riddles Section */}
-            <h2 className="text-3xl font-semibold text-stone-100 mb-4">Riddles</h2>
-            <div className="space-y-4">
-              <div className="bg-stone-700 p-4 rounded-md">
-                <p className="text-lg text-stone-100">1. What is small, but can open the biggest doors?</p>
-              </div>
-              <div className="bg-stone-700 p-4 rounded-md">
-                <p className="text-lg text-stone-100">2. I am something that runs but never walks. What am I?</p>
-              </div>
-              <div className="bg-stone-700 p-4 rounded-md">
-                <p className="text-lg text-stone-100">3. I am the thing that locks and unlocks. What am I?</p>
-              </div>
-              <div className="bg-stone-700 p-4 rounded-md">
-                <p className="text-lg text-stone-100">4. I am something that opens only with the correct code. What am I?</p>
+      <Nav />
+      <div className="min-h-screen bg-stone-900 p-6">
+        <div className="mx-auto bg-stone-800 p-3 rounded-lg shadow-lg">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-2">
+            <div className="lg:col-span-2 space-y-6">
+              {/* Riddles Section */}
+              <h2 className="text-3xl font-semibold text-stone-100 mb-4">Riddles</h2>
+              <div className="space-y-4">
+                {riddles && riddles.length > 0 ? (
+                  riddles.map((riddle) => (
+                    <div key={riddle.id} className="bg-stone-700 p-4 rounded-md">
+                      <p className="text-lg text-stone-100">
+                        {riddle.position}. {riddle.content}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <div>No riddles available</div> // Show message if no riddles
+                )}
               </div>
             </div>
-          </div>
 
-          {/* Timer and Input for Unlocking */}
-          <div className="space-y-6">
-            {/* Countdown Timer */}
-            <CountdownTimer />
+            {/* Timer and Input for Unlocking */}
+            <div className="space-y-6">
+              {/* Countdown Timer */}
+              <CountdownTimer />
 
-            {/* Lock Image */}
-            <div className="text-center">
-              <img src={Lock} alt="Lock" className="mx-auto max-h-32" />
-            </div>
+              {/* Lock Image */}
+              <div className="text-center">
+                <img src={Lock} alt="Lock" className="mx-auto max-h-32" />
+              </div>
 
-            {/* Form to Unlock the Lock */}
-            <form onSubmit={handleSubmit} className="flex justify-between mt-8">
-              <input
-                type="text"
-                name="riddle1"
-                value={answers.riddle1}
-                onChange={handleInputChange}
-                className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                maxLength={1}
-                placeholder="A"
-              />
-              <input
-                type="text"
-                name="riddle2"
-                value={answers.riddle2}
-                onChange={handleInputChange}
-                className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                maxLength={1}
-                placeholder="B"
-              />
-              <input
-                type="text"
-                name="riddle3"
-                value={answers.riddle3}
-                onChange={handleInputChange}
-                className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                maxLength={1}
-                placeholder="C"
-              />
-              <input
-                type="text"
-                name="riddle4"
-                value={answers.riddle4}
-                onChange={handleInputChange}
-                className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                maxLength={1}
-                placeholder="D"
-              />
-            </form>
+              {/* Form to Unlock the Lock */}
+              <form onSubmit={handleSubmit} className="flex justify-between mt-8">
+                <input
+                  type="text"
+                  name="riddle1"
+                  value={answers.riddle1}
+                  onChange={handleInputChange}
+                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                  maxLength={1}
+                  placeholder="A"
+                />
+                <input
+                  type="text"
+                  name="riddle2"
+                  value={answers.riddle2}
+                  onChange={handleInputChange}
+                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                  maxLength={1}
+                  placeholder="B"
+                />
+                <input
+                  type="text"
+                  name="riddle3"
+                  value={answers.riddle3}
+                  onChange={handleInputChange}
+                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                  maxLength={1}
+                  placeholder="C"
+                />
+                <input
+                  type="text"
+                  name="riddle4"
+                  value={answers.riddle4}
+                  onChange={handleInputChange}
+                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                  maxLength={1}
+                  placeholder="D"
+                />
+              </form>
 
-            {/* Unlock Button */}
-            <div className="text-center mt-6">
-              <button
-                type="submit"
-                onClick={handleSubmit}
-                className="py-2 px-6 bg-blue-500 text-white text-lg rounded-md hover:bg-red-600"
-              >
-                Unlock the Lock
-              </button>
+              {/* Unlock Button */}
+              <div className="text-center mt-6">
+                <button
+                  type="submit"
+                  onClick={handleSubmit}
+                  className="py-2 px-6 bg-blue-500 text-white text-lg rounded-md hover:bg-red-600"
+                >
+                  Unlock the Lock
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   );
 };
