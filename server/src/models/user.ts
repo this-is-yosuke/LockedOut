@@ -1,34 +1,40 @@
-import { DataTypes, type Sequelize, Model, type Optional } from 'sequelize';
+import { 
+    DataTypes, type Sequelize, Model, type CreationOptional, type InferAttributes, type InferCreationAttributes,
+    BelongsToManyAddAssociationMixin } from 'sequelize';
 import bcrypt from 'bcrypt';
+import { Room } from './room';
 
-interface UserAttributes {
-    id: number;
-    username: string;
-    email: string;
-    password: string;
-}
+// interface UserAttributes {
+//     id: number;
+//     username: string;
+//     email: string;
+//     password: string;
+// }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
+// interface UserCreationAttributes extends Optional<UserAttributes, 'id'> { }
 
 export class User
-    extends Model<UserAttributes, UserCreationAttributes>
-    implements UserAttributes {
-    public id!: number;
-    public username!: string;
-    public email!: string;
-    public password!: string;
+    extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+    declare id: CreationOptional<number>;
+    declare username: string;
+    declare email: string;
+    declare password: string;
 
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+    // declare readonly createdAt: Date;
+    // declare readonly updatedAt: Date;
+    
+    // Declaring the many-to-many
+    declare addRoom: BelongsToManyAddAssociationMixin<Room, Room['id']>;
+    declare addRooms: BelongsToManyAddAssociationMixin<Room[], Room['id'][]>;
 
     // Hash the password before saving the user
-    public async setPassword(password: string) {
+    async setPassword(password: string): Promise<void> {
         const saltRounds = 10;
         this.password = await bcrypt.hash(password, saltRounds);
     }
 }
 
-export function UserFactory(sequelize: Sequelize): typeof User {
+export function UserFactory(sequelize: Sequelize) {
     User.init(
         {
             id: {
@@ -50,8 +56,8 @@ export function UserFactory(sequelize: Sequelize): typeof User {
             },
         },
         {
-            tableName: 'users',
             sequelize,
+            modelName: 'users',
             hooks: {
                 beforeCreate: async (user: User) => {
                     await user.setPassword(user.password);

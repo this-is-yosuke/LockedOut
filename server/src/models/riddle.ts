@@ -40,8 +40,8 @@ import { Model,
                 },
 
             }, {
-                tableName: 'riddle',
                 sequelize,
+                modelName: 'riddle',
             }
         );
         return Riddle;
