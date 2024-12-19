@@ -1,13 +1,17 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import { Room } from '../../models/index.js';
+import { User } from '../../models/user.js';
 
 const router = express.Router();
 
 // GET rooms
 router.get('/', async (_req: Request, res: Response) => {
     try{
-        const rooms = await Room.findAll();
+        const rooms = await Room.findAll({
+            // This includes the User in the room's json
+            include: { model: User,},
+        });
         res.status(200).json(rooms);
     } catch (error) {
         res.status(500).json({error: 'The server is down.'});
@@ -17,7 +21,9 @@ router.get('/', async (_req: Request, res: Response) => {
 // GET rooms by ID /rooms/:id
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const room = await Room.findByPk(req.params.id);
+        const room = await Room.findByPk(req.params.id, {
+            include: {model: User},
+        });
         if(room){
             res.status(200).json(room);
         }else{

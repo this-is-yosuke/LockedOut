@@ -1,4 +1,4 @@
-import {Lock} from '../assets'
+import Lock from '../assets/lock.png';
 
 const NavLogo: React.FC = () => {
   return (

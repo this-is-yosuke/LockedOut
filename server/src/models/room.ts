@@ -1,6 +1,6 @@
 import { Model, 
     type InferAttributes, type InferCreationAttributes, type CreationOptional, Sequelize,
-    DataTypes, ForeignKey} from 'sequelize';
+    DataTypes, ForeignKey, type BelongsToManyAddAssociationMixin} from 'sequelize';
 import type { User } from './user';
 
 export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<Room>> {
@@ -10,6 +10,9 @@ export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<R
     declare type: string;
     declare difficulty: number;
     declare creatorID: ForeignKey<User['id']>;
+    // Declaring the many-to-many
+    declare addUsers: BelongsToManyAddAssociationMixin<User[], User['id'][]>;
+    declare addUser: BelongsToManyAddAssociationMixin<User, User['id']>
 }
 
 export function RoomFactory(sequelize: Sequelize) {
@@ -40,7 +43,7 @@ export function RoomFactory(sequelize: Sequelize) {
         },
         {
             sequelize,
-            tableName: 'room',
+            modelName: 'room',
         }
     );
     return Room;
