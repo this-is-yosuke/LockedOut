@@ -1,0 +1,8 @@
+[
+    {"title": "Ancient Crypt", "description": "Solve spooky riddles to escape this tomb.", "type": "letter", "difficulty": 3, "creatorID": 1},
+    {"title": "Lost in Space", "description": "Complete these sci-fi riddles to escape the alien spacecraft!", "type": "letter", "difficulty": 2, "creatorID": 2},
+    {"title": "The Endless Ikea", "description": "You suddenly find yourself in the infamous Endless Ikea. Solve the riddles and make it out alive!", "type": "letter", "difficulty": 4, "creatorID": 3},
+    {"title": "Dummy1", "description": "This is a test value", "type": "number", "difficulty": 4, "creatorID": 3},
+    {"title": "Dummy2", "description": "This is another test value", "type": "number", "difficulty": 4, "creatorID": 2},
+    {"title": "Dummy3", "description": "This is yet another test value", "type": "number", "difficulty": 4, "creatorID": 1}
+]
