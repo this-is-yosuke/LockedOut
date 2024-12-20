@@ -57,7 +57,7 @@ export function UserFactory(sequelize: Sequelize) {
         },
         {
             sequelize,
-            modelName: 'users',
+            modelName: 'user',
             hooks: {
                 beforeCreate: async (user: User) => {
                     await user.setPassword(user.password);
