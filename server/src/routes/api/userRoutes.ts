@@ -23,6 +23,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const user = await User.findByPk(id, {
+            include: [{model: Room, as: 'rooms'}], 
             attributes: { exclude: ['password'] }
         });
         if (user) {
