@@ -10,7 +10,7 @@ import { Model,
         declare content: string;
         declare answer: string;
         declare position: number;
-        declare roomID: ForeignKey<Room['id']>
+        declare roomId: ForeignKey<Room['id']>
     }
 
     export function RiddleFactory(sequelize: Sequelize) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Nav, Footer } from '../containers';
-import Lock from '../assets/lock.png';
+import { Nav, Footer } from '../containers'; // Your Nav and Footer components
+import Lock from '../assets/lock.png'; // Lock image for display
 import axios from 'axios';
 
 // Countdown Timer Component
@@ -42,31 +42,34 @@ const EscapeRoom: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchRiddles = async (roomId: number) => {
+  // Fetch riddles from the API
+  const fetchRiddles = async (roomID: number) => {
     try {
-      const response = await axios.get(`/api/riddles/${roomId}`);
-      console.log("Fetched riddles:", response.data); // Log the response
-
-      if (Array.isArray(response.data) && response.data.length > 0) {
-        setRiddles(response.data); // Set riddles state if valid
+      const response = await axios.get(`/api/riddles/room/${roomID}`);
+      console.log("Fetched riddles response:", response.data); // Log the full response
+  
+      if (Array.isArray(response.data)) {
+        console.log("Riddles found:", response.data);
+        setRiddles(response.data); // Set riddles
       } else {
-        console.error("No riddles found for room ID", roomId);
-        setRiddles([]); // Set an empty array if no riddles
+        console.error("No riddles found for room ID", roomID);
+        setRiddles([]); // Set empty array if no riddles
       }
-
-      setLoading(false);
+  
+      setLoading(false); // After data is fetched
     } catch (err) {
       console.error("Error fetching riddles:", err);
       setError('Error fetching riddles');
-      setLoading(false);
+      setLoading(false); // After error
     }
   };
 
   // Fetch riddles for room 1 on page load
   useEffect(() => {
-    fetchRiddles(1); // Hardcoded room ID for now (room 1)
+    fetchRiddles(1); // Fetch riddles for room 1
   }, []);
 
+  // Handle input changes for the riddles
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAnswers((prevAnswers) => ({
@@ -75,6 +78,7 @@ const EscapeRoom: React.FC = () => {
     }));
   };
 
+  // Handle form submission and check answers
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Logic for checking answers (you can add answer validation here)
@@ -90,12 +94,12 @@ const EscapeRoom: React.FC = () => {
     }
   };
 
-  console.log("Rendering riddles:", riddles); // Log riddles before rendering
-
+  // Loading state
   if (loading) {
     return <div>Loading riddles...</div>;
   }
 
+  // Error state
   if (error) {
     return <div>{error}</div>;
   }

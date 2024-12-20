@@ -52,16 +52,13 @@ const Try = () => {
   const fetchRandomRooms = async () => {
     setLoading(true);
     setRooms([]); // Reset rooms array before fetching new data
-
-    // Generate exactly 3 random IDs between 1 and 5
-    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 5) + 1);
+    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 5) + 1); // Generate 3 random IDs between 1 and 5
     console.log("Generated random IDs:", randomIds); // Log generated random IDs for debugging
 
     // Fetch room data for each random ID
     for (let id of randomIds) {
       await fetchRoomById(id); // Fetch room and wait for the response before moving to the next
     }
-
     setLoading(false); // Set loading to false after all rooms are fetched
   };
 
