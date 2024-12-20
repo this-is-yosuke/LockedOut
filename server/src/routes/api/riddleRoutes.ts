@@ -1,13 +1,15 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { Riddle } from '../../models/riddle.js';
+import { Room, Riddle } from '../../models/index.js';
 
 const router = express.Router();
 
 // GET /riddles - Get all riddles
 router.get('/', async (_req: Request, res: Response) => {
     try {
-        const riddles = await Riddle.findAll();
+        const riddles = await Riddle.findAll({
+            include: [{model: Room}],
+        });
         res.status(200).json(riddles);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
@@ -17,7 +19,9 @@ router.get('/', async (_req: Request, res: Response) => {
 // GET /riddles/:id - Get a riddle by ID
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const riddle = await Riddle.findByPk(req.params.id);
+        const riddle = await Riddle.findByPk(req.params.id, {
+            include: [{model: Room}],
+        });
         if (riddle) {
             res.status(200).json(riddle);
         } else {
