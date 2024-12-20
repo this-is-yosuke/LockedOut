@@ -94,12 +94,13 @@ NOTE: /routes/index needs its riddleToken again
 --------------------------------END OF MY RANT-------------------------------*/
 
 // The 1 User - to - many Rooms association
-// User.hasMany(Room, {
-//     onDelete: 'CASCADE',
-//     as: 'rooms',
-// })
+User.hasMany(Room, {
+    onDelete: 'CASCADE',
+    as: 'roomsCreated',
+    foreignKey: 'id',
+});
 
-// Room.belongsTo(User);
+Room.belongsTo(User, {as: 'roomsCreated', foreignKey: 'id'});
 
 // The many Users - to - many Rooms association
 User.belongsToMany(Room, {
