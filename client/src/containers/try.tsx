@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
 
 // Interface for room data
 interface Room {
@@ -16,82 +17,70 @@ const Try = () => {
   const [rooms, setRooms] = useState<Room[]>([]); // State to store multiple rooms
   const [loading, setLoading] = useState<boolean>(true); // State for loading status
   const [error, setError] = useState<string | null>(null); // State to store error message if any
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   // Function to fetch room data by ID
   const fetchRoomById = async (id: number) => {
     console.log("Trying to fetch room with ID:", id);
     try {
-      // Updated API endpoint to match your backend route
-      console.log(`Making GET request to /api/rooms/${id}`);
       const response = await axios.get(`/api/rooms/${id}`);
-
-      console.log("Received response:", response);
-      // Map the response data to match your interface structure
       const fetchedRoom: Room = {
         id: response.data.id,
-        roomName: response.data.title, // Mapping backend title to frontend roomName
-        roomDescription: response.data.description, // Mapping backend description to frontend roomDescription
-        roomImage: null, // Assuming you don't have an image field in backend
-        roomDifficulty: response.data.difficulty, // Mapping backend difficulty to frontend roomDifficulty
-        winRate: 50, // Placeholder winRate as it's not provided in the backend
+        roomName: response.data.title,
+        roomDescription: response.data.description,
+        roomImage: null, // Assuming image is not provided
+        roomDifficulty: response.data.difficulty,
+        winRate: 50, // Placeholder winRate
         creator: 'Unknown', // Placeholder creator
       };
 
-      // Add the room to the rooms state array
       setRooms((prevRooms) => [...prevRooms, fetchedRoom]);
       console.log("Room data added to state:", fetchedRoom);
     } catch (error: any) {
       console.error('Error fetching room:', error);
-      setError('Error fetching room data'); // Set error message
-      setLoading(false); // Set loading to false after error
-      console.log("Error occurred while fetching room data:", error.message);
+      setError('Error fetching room data');
+      setLoading(false);
     }
   };
 
-  // Function to generate random room IDs (between 1 and 5) and fetch corresponding rooms
+  // Function to generate random room IDs and fetch corresponding rooms
   const fetchRandomRooms = async () => {
     setLoading(true);
-    setRooms([]); // Reset rooms array before fetching new data
-    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 5) + 1); // Generate 3 random IDs between 1 and 5
-    console.log("Generated random IDs:", randomIds); // Log generated random IDs for debugging
-
-    // Fetch room data for each random ID
+    setRooms([]); // Reset rooms array
+    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 5) + 1);
     for (let id of randomIds) {
-      await fetchRoomById(id); // Fetch room and wait for the response before moving to the next
+      await fetchRoomById(id);
     }
-    setLoading(false); // Set loading to false after all rooms are fetched
+    setLoading(false);
   };
 
-  // Run the fetch function once when the component mounts
   useEffect(() => {
-    console.log("Component mounted, fetching random rooms...");
-    fetchRandomRooms(); // Fetch random rooms when the component mounts
-  }, []); // Empty dependency array ensures it runs once when component mounts
+    fetchRandomRooms();
+  }, []);
+
+  // Handle navigation when "Try Now" button is clicked
+  const handleTryNow = (id: number) => {
+    navigate(`/room/${id}`); // Navigate to the room page with the specific room id
+  };
 
   // Loading state
   if (loading) {
-    console.log("Loading room data...");
-    return <div>Loading rooms...</div>; // Display loading state while fetching data
+    return <div>Loading rooms...</div>;
   }
 
   // Error state
   if (error) {
-    console.log("Error state:", error);
-    return <div>{error}</div>; // Display error message if fetching fails
+    return <div>{error}</div>;
   }
 
-  // When no rooms found, even though loading is done
+  // When no rooms found
   if (rooms.length === 0) {
-    console.log("No rooms found");
     return <div>No rooms found!</div>;
   }
-
-  console.log("Rendering rooms:", rooms);
 
   return (
     <section className="py-16 bg-stone-950" id="try">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Title */}
         <div className="text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-bold text-stone-100 mb-4">Try Out Some Rooms</h2>
           <p className="text-lg sm:text-xl text-stone-200 max-w-3xl mx-auto">
@@ -104,7 +93,7 @@ const Try = () => {
           {rooms.map((room) => (
             <div key={room.id} className="bg-stone-800 rounded-lg shadow-lg overflow-hidden">
               <img
-                src={room.roomImage || 'https://via.placeholder.com/600x400'} // Use placeholder if image is missing
+                src={room.roomImage || 'https://via.placeholder.com/600x400'}
                 alt={room.roomName}
                 className="w-full h-48 object-cover"
               />
@@ -122,9 +111,14 @@ const Try = () => {
                 <div className="mt-4 flex items-center justify-between">
                   <div className="flex items-center text-gray-600">
                     <strong className="mr-1">Difficulty:</strong>
-                    <span className="text-yellow-500">{"⭐".repeat(room.roomDifficulty)}</span> {/* Display difficulty stars */}
+                    <span className="text-yellow-500">{"⭐".repeat(room.roomDifficulty)}</span>
                   </div>
-                  <a href="#" className="text-red-600 hover:text-red-700 font-semibold">Try Now</a>
+                  <button
+                    onClick={() => handleTryNow(room.id)} // Call the handleTryNow function with the room's id
+                    className="text-red-600 hover:text-red-700 font-semibold"
+                  >
+                    Try Now
+                  </button>
                 </div>
               </div>
             </div>

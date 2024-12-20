@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Nav, Footer } from '../containers'; // Your Nav and Footer components
 import Lock from '../assets/lock.png'; // Lock image for display
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom'; // Import useParams for capturing roomID from URL
 
 // Countdown Timer Component
-const CountdownTimer: React.FC = () => {
+const CountdownTimer: React.FC<{ onTimeUp: () => void }> = ({ onTimeUp }) => {
   const targetTime = new Date().getTime() + 30 * 60 * 1000; // 30 minutes countdown
   const [timeLeft, setTimeLeft] = useState(targetTime - new Date().getTime());
 
@@ -12,10 +13,13 @@ const CountdownTimer: React.FC = () => {
     const interval = setInterval(() => {
       const remainingTime = targetTime - new Date().getTime();
       setTimeLeft(remainingTime);
-      if (remainingTime <= 0) clearInterval(interval);
+      if (remainingTime <= 0) {
+        clearInterval(interval);
+        onTimeUp(); // Trigger the callback when time is up
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [onTimeUp]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60000);
@@ -30,46 +34,54 @@ const CountdownTimer: React.FC = () => {
   );
 };
 
+// Modal Component for Time Up
+const TimeUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
+  <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
+    <div className="bg-white p-8 rounded-lg text-center">
+      <h2 className="text-2xl font-semibold mb-4">Time's Up!</h2>
+      <p className="text-lg mb-6">You've run out of time, you will be redirected to the home page.</p>
+      <button
+        onClick={onClose}
+        className="py-2 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+      >
+        Go to Home
+      </button>
+    </div>
+  </div>
+);
+
 // Escape Room Page
 const EscapeRoom: React.FC = () => {
-  const [answers, setAnswers] = useState({
-    riddle1: '',
-    riddle2: '',
-    riddle3: '',
-    riddle4: '',
-  });
-  const [riddles, setRiddles] = useState<any[]>([]); // State for riddles
+  const { roomId } = useParams(); // Capture roomId from URL using useParams
+  const [answers, setAnswers] = useState<{ [key: string]: string }>({});
+  const [riddles, setRiddles] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isTimeUp, setIsTimeUp] = useState<boolean>(false); // Track if time is up
+  const navigate = useNavigate(); // For redirection
 
-  // Fetch riddles from the API
-  const fetchRiddles = async (roomID: number) => {
+  // Fetch riddles based on roomId
+  const fetchRiddles = async (roomID: string) => {
     try {
       const response = await axios.get(`/api/riddles/room/${roomID}`);
-      console.log("Fetched riddles response:", response.data); // Log the full response
-  
       if (Array.isArray(response.data)) {
-        console.log("Riddles found:", response.data);
-        setRiddles(response.data); // Set riddles
+        setRiddles(response.data);
       } else {
-        console.error("No riddles found for room ID", roomID);
-        setRiddles([]); // Set empty array if no riddles
+        setRiddles([]); // If no riddles found for the room, set an empty array
       }
-  
-      setLoading(false); // After data is fetched
+      setLoading(false);
     } catch (err) {
-      console.error("Error fetching riddles:", err);
       setError('Error fetching riddles');
-      setLoading(false); // After error
+      setLoading(false);
     }
   };
 
-  // Fetch riddles for room 1 on page load
   useEffect(() => {
-    fetchRiddles(1); // Fetch riddles for room 1
-  }, []);
+    if (roomId) {
+      fetchRiddles(roomId); // Fetch riddles when roomId changes
+    }
+  }, [roomId]); // Re-fetch riddles if roomId changes
 
-  // Handle input changes for the riddles
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAnswers((prevAnswers) => ({
@@ -78,28 +90,34 @@ const EscapeRoom: React.FC = () => {
     }));
   };
 
-  // Handle form submission and check answers
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for checking answers (you can add answer validation here)
-    if (
-      answers.riddle1 === 'k' &&
-      answers.riddle2 === 't' &&
-      answers.riddle3 === 'l' &&
-      answers.riddle4 === 'c'
-    ) {
+    const isCorrect = riddles.every((riddle, index) => {
+      const answer = answers[`riddle${index + 1}`]?.toLowerCase();
+      return answer === riddle.answer.toLowerCase();
+    });
+
+    if (isCorrect) {
       alert('You unlocked the lock!');
+      setTimeout(() => {
+        navigate('/'); // Redirect to home page after success
+      }, 1000); // Optional delay before redirect
     } else {
       alert('Wrong answers. Try again!');
     }
   };
 
-  // Loading state
+  const handleTimeUp = () => {
+    setIsTimeUp(true); // Time is up, show modal
+    setTimeout(() => {
+      navigate('/'); // Redirect to home page after some delay
+    }, 2000); // Wait 2 seconds before redirect
+  };
+
   if (loading) {
     return <div>Loading riddles...</div>;
   }
 
-  // Error state
   if (error) {
     return <div>{error}</div>;
   }
@@ -111,7 +129,6 @@ const EscapeRoom: React.FC = () => {
         <div className="mx-auto bg-stone-800 p-3 rounded-lg shadow-lg">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-2">
             <div className="lg:col-span-2 space-y-6">
-              {/* Riddles Section */}
               <h2 className="text-3xl font-semibold text-stone-100 mb-4">Riddles</h2>
               <div className="space-y-4">
                 {riddles && riddles.length > 0 ? (
@@ -123,62 +140,33 @@ const EscapeRoom: React.FC = () => {
                     </div>
                   ))
                 ) : (
-                  <div>No riddles available</div> // Show message if no riddles
+                  <div>No riddles available</div>
                 )}
               </div>
             </div>
 
-            {/* Timer and Input for Unlocking */}
             <div className="space-y-6">
-              {/* Countdown Timer */}
-              <CountdownTimer />
+              <CountdownTimer onTimeUp={handleTimeUp} /> {/* Countdown timer */}
 
-              {/* Lock Image */}
               <div className="text-center">
                 <img src={Lock} alt="Lock" className="mx-auto max-h-32" />
               </div>
 
-              {/* Form to Unlock the Lock */}
               <form onSubmit={handleSubmit} className="flex justify-between mt-8">
-                <input
-                  type="text"
-                  name="riddle1"
-                  value={answers.riddle1}
-                  onChange={handleInputChange}
-                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                  maxLength={1}
-                  placeholder="A"
-                />
-                <input
-                  type="text"
-                  name="riddle2"
-                  value={answers.riddle2}
-                  onChange={handleInputChange}
-                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                  maxLength={1}
-                  placeholder="B"
-                />
-                <input
-                  type="text"
-                  name="riddle3"
-                  value={answers.riddle3}
-                  onChange={handleInputChange}
-                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                  maxLength={1}
-                  placeholder="C"
-                />
-                <input
-                  type="text"
-                  name="riddle4"
-                  value={answers.riddle4}
-                  onChange={handleInputChange}
-                  className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                  maxLength={1}
-                  placeholder="D"
-                />
+                {riddles.map((riddle, index) => (
+                  <input
+                    key={riddle.id}
+                    type="text"
+                    name={`riddle${index + 1}`}
+                    value={answers[`riddle${index + 1}`] || ''}
+                    onChange={handleInputChange}
+                    className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
+                    maxLength={1}
+                    placeholder={riddle.position.toString()}
+                  />
+                ))}
               </form>
 
-              {/* Unlock Button */}
               <div className="text-center mt-6">
                 <button
                   type="submit"
@@ -193,6 +181,9 @@ const EscapeRoom: React.FC = () => {
         </div>
       </div>
       <Footer />
+
+      {/* Show Time Up Modal if time is up */}
+      {isTimeUp && <TimeUpModal onClose={() => navigate('/')} />}
     </>
   );
 };
