@@ -1,12 +1,11 @@
 import { Nav, Footer } from '../containers'; // Ensure correct path for Nav
 import Lock from '../assets/lock.png';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import { login } from '../api/authAPI';
-import auth from '../utils/auth';
+import { register } from '../api/authAPI';
 import { UserRegister } from '../interfaces/UserRegister';
 
 const Register: React.FC = () => {
-  const [loginData, setLoginData] = useState<UserRegister>({
+  const [registerData, setRegisterData] = useState<UserRegister>({
     username: '',
     password: '',
     email: '',
@@ -17,19 +16,22 @@ const Register: React.FC = () => {
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setLoginData({
-      ...loginData,
+    setRegisterData({
+      ...registerData,
       [name]: value,
     });
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    console.log("Submission sent"); // Debugging
     try {
-      const data = await login(loginData);
-      auth.login(data.token);
+      const data = await register(registerData);
+      if (data.token) {
+        window.location.href = '/login'; // Redirect to login page
+      }
     } catch (err) {
-      console.error('Failed to login', err);
+      console.error('Failed to Register', err);
     }
   };
 

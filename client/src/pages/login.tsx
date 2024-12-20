@@ -1,8 +1,38 @@
 import { Nav } from '../containers'; 
 import Lock from '../assets/lock.png';
+import { useState, type FormEvent, type ChangeEvent } from 'react';
+
+import Auth from '../utils/auth';
+import { login } from '../api/authAPI';
+import type { UserLogin } from '../interfaces/UserLogin';
+
 
 // React.FC (or React.FunctionComponent) is a generic type for functional components
 const Login: React.FC = () => {
+    const [loginData, setLoginData] = useState<UserLogin>({
+      username: '',
+      password: '',
+    });
+  
+    const handleChange = (
+      e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+      const { name, value } = e.target;
+      setLoginData({
+        ...loginData,
+        [name]: value,
+      });
+    };
+  
+    const handleSubmit = async (e: FormEvent) => {
+      e.preventDefault();
+      try {
+        const data = await login(loginData);
+        Auth.login(data.token);
+      } catch (err) {
+        console.error('Failed to login', err);
+      }
+    };
   return (
     <>
       <Nav />
@@ -20,7 +50,7 @@ const Login: React.FC = () => {
           {/* Login Form Section */}
           <div className="w-2/3 p-8 bg-stone-800">
             <h2 className="text-3xl font-semibold mb-6 text-stone-100">Welcome Back</h2>
-            <form action="#" method="POST">
+            <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label
                   htmlFor="username"
@@ -29,6 +59,7 @@ const Login: React.FC = () => {
                   Username
                 </label>
                 <input
+                  onChange={handleChange}
                   type="text"
                   id="username"
                   name="username"
@@ -45,6 +76,7 @@ const Login: React.FC = () => {
                   Password
                 </label>
                 <input
+                onChange={handleChange}
                   type="password"
                   id="password"
                   name="password"
