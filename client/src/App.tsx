@@ -10,7 +10,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/user" element={<User />} />
-          <Route path="/room" element={<EscapeRoom />} />
+          <Route path="/room/:roomId" element={<EscapeRoom />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<Contact />} />

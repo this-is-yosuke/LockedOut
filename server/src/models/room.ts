@@ -9,6 +9,7 @@ export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<R
     declare description: string;
     declare type: string;
     declare difficulty: number;
+    declare image: string;
     declare creatorID: ForeignKey<User['id']>;
     // Declaring the many-to-many
     declare addUsers: BelongsToManyAddAssociationMixin<User[], User['id'][]>;
@@ -38,6 +39,10 @@ export function RoomFactory(sequelize: Sequelize) {
             },
             difficulty: {
                 type: DataTypes.INTEGER,
+                allowNull: false
+            },
+            image: {
+                type: DataTypes.STRING,
                 allowNull: false
             },
         },
