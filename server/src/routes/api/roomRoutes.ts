@@ -1,8 +1,6 @@
 import express from 'express';
 import type { Request, Response } from 'express';
-import { Room } from '../../models/room.js';  // Import your Room model
-import { User } from '../../models/user.js';  // Import your User model
-import { Riddle } from '../../models/riddle.js';  // Import your Riddle model
+import { User, Room, Riddle } from '../../models/index.js';
 import sequelize from '../../config/connection.js';
 
 const router = express.Router();
