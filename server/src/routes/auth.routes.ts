@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response) => {
 
     const passwordIsValid = await bcrypt.compare(password, user.password);
     if (!passwordIsValid) {
-        return res.status(401).json({ message: 'Authentication failed' });
+        return res.status(401).json({ message: 'Authentication failed, Password is invalid' });
     }
 
     const secretKey = process.env.JWT_SECRET_KEY || '';

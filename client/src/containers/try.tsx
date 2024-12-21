@@ -7,10 +7,9 @@ interface Room {
   id: number;
   roomName: string;
   roomDescription: string;
-  roomImage: string | null;
   roomDifficulty: number;
+  roomImage: string;
   winRate: number;
-  creator: string;
 }
 
 const Try = () => {
@@ -28,10 +27,9 @@ const Try = () => {
         id: response.data.id,
         roomName: response.data.title,
         roomDescription: response.data.description,
-        roomImage: null, // Assuming image is not provided
+        roomImage: response.data.image, 
         roomDifficulty: response.data.difficulty,
         winRate: 50, // Placeholder winRate
-        creator: 'Unknown', // Placeholder creator
       };
 
       setRooms((prevRooms) => [...prevRooms, fetchedRoom]);
@@ -47,7 +45,7 @@ const Try = () => {
   const fetchRandomRooms = async () => {
     setLoading(true);
     setRooms([]); // Reset rooms array
-    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 5) + 1);
+    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 10) + 1);
     for (let id of randomIds) {
       await fetchRoomById(id);
     }
@@ -105,7 +103,6 @@ const Try = () => {
                     <strong>Win Rate:</strong> {room.winRate}%
                   </div>
                   <div>
-                    <strong>Creator:</strong> {room.creator}
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between">
