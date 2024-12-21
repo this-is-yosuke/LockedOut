@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/', async (_req: Request, res: Response) => {
     try {
         const rooms = await Room.findAll({
-            include: [{ model: User }, { model: Riddle, as: 'riddles' }],
+            include: [{model: User, as: 'roomsCreated/Creator'}, { model: User }, { model: Riddle, as: 'riddles' }],
         });
         res.status(200).json(rooms);
     } catch (error) {
@@ -21,7 +21,7 @@ router.get('/', async (_req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const room = await Room.findByPk(req.params.id, {
-            include: [{ model: User }, { model: Riddle, as: 'riddles' }],
+            include: [{model: User, as: 'roomsCreated/Creator'}, { model: User }, { model: Riddle, as: 'riddles' }],
         });
         if (room) {
             res.status(200).json(room);
