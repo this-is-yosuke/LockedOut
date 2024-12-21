@@ -12,8 +12,8 @@ export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<R
     declare image: string;
     declare creatorID: ForeignKey<User['id']>;
     // Declaring the many-to-many
-    declare addUsers: BelongsToManyAddAssociationMixin<User[], User['id'][]>;
-    declare addUser: BelongsToManyAddAssociationMixin<User, User['id']>
+    declare addUsers: BelongsToManyAddAssociationMixin<User[], User['id'][]>; 
+    declare addUser: BelongsToManyAddAssociationMixin<User, User['id']>;
 }
 
 export function RoomFactory(sequelize: Sequelize) {
@@ -45,6 +45,11 @@ export function RoomFactory(sequelize: Sequelize) {
                 type: DataTypes.STRING,
                 allowNull: false
             },
+            creatorID: {
+                type: DataTypes.INTEGER, // Assuming the creatorID is an integer (referring to User's ID)
+                allowNull: false,
+                defaultValue: 1 // Set your desired default value here (e.g., 1)
+            }
         },
         {
             sequelize,
