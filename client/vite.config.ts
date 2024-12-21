@@ -9,6 +9,11 @@ export default defineConfig({
         target: "http://localhost:3001",
         secure: false,
         changeOrigin: true,
+      },
+      '/auth':{
+        target: "http://localhost:3001", // This is the backend server
+        secure: false,
+        changeOrigin: true,
       }
     }
   },
