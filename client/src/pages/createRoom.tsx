@@ -1,8 +1,6 @@
-import { Nav, Footer } from '../containers';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-
-// Inside the CreateRoom component
+import { Nav, Footer } from '../containers';
 
 interface FormData {
   roomName: string;
@@ -46,14 +44,12 @@ const CreateRoom: React.FC = () => {
     riddleFourName: '',
   });
 
-  const [errors, setErrors] = useState({} as Record<string, string>);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loadingRiddles, setLoadingRiddles] = useState(false);
   const [riddleError, setRiddleError] = useState('');
 
-  // Function to fetch a riddle from the API and update the correct field
   const fetchRiddle = async (riddleNumber: number) => {
     setLoadingRiddles(true);
-
     try {
       const response = await axios.get('https://riddles-api.vercel.app/random');
       const riddle = response.data;
@@ -73,7 +69,6 @@ const CreateRoom: React.FC = () => {
           newFormData.riddleFourText = riddle.riddle;
           newFormData.riddleFourAnswer = riddle.answer;
         }
-
         setFormData(newFormData);
         setRiddleError('');
       } else {
@@ -93,15 +88,11 @@ const CreateRoom: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    // Debugging: check if handleSubmit is triggered
-    console.log('Form submission triggered');
-  
     const formDataToSend = {
       title: formData.roomName,
       description: formData.roomDescription,
       type: formData.roomType,
-      difficulty: Number(formData.roomDifficulty),  
+      difficulty: Number(formData.roomDifficulty),
       image: formData.roomImage,
       creatorID: 1,
       riddles: [
@@ -111,9 +102,9 @@ const CreateRoom: React.FC = () => {
         { content: formData.riddleFourText, answer: formData.riddleFourAnswer, name: formData.riddleFourName },
       ],
     };
-  
+
     try {
-      const response = await axios.post('http://localhost:3000/api/rooms', formDataToSend);
+      const response = await axios.post('http://localhost:3001/api/rooms', formDataToSend);
       console.log('Room creation response:', response);
       alert('Room created successfully');
     } catch (error) {
@@ -121,6 +112,7 @@ const CreateRoom: React.FC = () => {
       alert('Failed to create room and riddles');
     }
   };
+
 
   return (
     <>

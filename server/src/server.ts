@@ -31,7 +31,7 @@ app.use(express.json());
 app.use(express.static('../client/dist'));
 
 // Routes
-app.use('/api/room', roomRouter); // Add room routes
+app.use('/api/rooms', roomRouter); // Add room routes
 app.use('/api', routes); // Add other routes (this is for your general API routes)
 app.use('/auth', Router);
 app.use('/api/users', userRouter);  // Ensure this line is present!

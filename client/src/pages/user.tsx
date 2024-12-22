@@ -73,7 +73,7 @@ const User: React.FC = () => {
                      {/* Link to Create Room */}
                      <div className="mb-6 flex justify-end">
   <a
-    href="/createRroom" // This should be the route where users can create a new room
+    href="/createroom" // This should be the route where users can create a new room
     className="text-lg text-blue-100 hover:underline"
   >
     <img src={Plus} className="w-6 h-6 mr-2 inline-block" /> Create A Room
