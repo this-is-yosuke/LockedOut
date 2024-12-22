@@ -4,11 +4,11 @@ import axios from 'axios';
 import { Footer } from '../containers';
 import { useEffect, useState } from 'react';
 import { useUser } from '../contexts'; // Import the useUser hook
+import {Lock, Plus } from '../assets'
 
 const User: React.FC = () => {
   const { user } = useUser(); // Access user data from context
   const [userData, setUserData] = useState<any>(null); // State to store user data from API
-  const [error, setError] = useState<string | null>(null); // State to handle errors
 
   // Log user object to verify if it's correctly loaded from context
   console.log("User from context:", user);
@@ -23,7 +23,7 @@ const User: React.FC = () => {
           Authorization: `Bearer ${user.token}`,
         },
         params: {
-          username: user.username, // Still pass the username as a query parameter if needed
+          username: user.username, // Pass the username as a query parameter if needed
         },
       })
         .then((response) => {
@@ -31,7 +31,6 @@ const User: React.FC = () => {
           setUserData(response.data); // Store fetched user data
         })
         .catch((err) => {
-          setError('Error loading user data');
           console.error("Error fetching user data:", err.response?.data || err.message || err); // Log error details
         });
     } else {
@@ -39,7 +38,6 @@ const User: React.FC = () => {
     }
   }, [user?.token, user?.username]); // Dependency array to re-fetch if user changes
 
-  
   // Log when userData is being rendered
   console.log("Rendering user data:", userData);
 
@@ -50,7 +48,11 @@ const User: React.FC = () => {
     );
   }
 
-  
+  // Extract relevant user data
+  const { username, email, roomsCreated, rooms } = userData;
+  const roomsCreatedCount = roomsCreated ? roomsCreated.length : 0; // Count the rooms created by the user
+  const roomsCompletedCount = rooms ? rooms.length : 0; // Count the rooms completed by the user
+
   return (
     <>
       <Nav />
@@ -59,28 +61,39 @@ const User: React.FC = () => {
 
           {/* Left Side: User Info */}
           <ProfileCard 
-            avatar="https://via.placeholder.com/150"
-            name="John Doe"
-            email="john.doe@example.com"
-            roomsCreated={5}
-            roomsCompleted={3}
+            avatar={Lock}  // You can replace this with user's avatar if available
+            name={username}  // Dynamically render the user's name
+            email={email}    // Dynamically render the user's email
+            roomsCreated={roomsCreatedCount} // Dynamically render the count of rooms created
+            roomsCompleted={roomsCompletedCount} // Dynamically render the count of rooms completed
           />
 
           {/* Right Side: User's Escape Rooms */}
           <main className="w-full lg:w-2/3 bg-stone-900 p-6">
+                     {/* Link to Create Room */}
+                     <div className="mb-6 flex justify-end">
+  <a
+    href="/createRroom" // This should be the route where users can create a new room
+    className="text-lg text-blue-100 hover:underline"
+  >
+    <img src={Plus} className="w-6 h-6 mr-2 inline-block" /> Create A Room
+  </a>
+</div>
             <h2 className="text-3xl font-semibold text-stone-100 mb-6">Your Escape Rooms</h2>
 
             {/* Created Rooms Section */}
             <div className="mb-6">
               <SectionTitle title="Rooms You Created" />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <RoomCard 
-                  title="Escape the Dungeon"
-                  description="A thrilling dungeon escape adventure with puzzles and mysteries."
-                  buttonText="View Details"
-                  buttonColor="bg-red-500"
-                />
-                {/* More created rooms... */}
+                {roomsCreated && roomsCreated.map((room: any) => (
+                  <RoomCard 
+                    key={room.id}  // Unique key for each room
+                    title={room.title}  // Room title
+                    description={room.description}  // Room description
+                    buttonText="View Details"
+                    buttonColor="bg-red-500"
+                  />
+                ))}
               </div>
             </div>
 
@@ -88,13 +101,15 @@ const User: React.FC = () => {
             <div>
               <SectionTitle title="Rooms You've Completed" />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <RoomCard 
-                  title="Haunted House"
-                  description="A spooky escape room full of paranormal activity."
-                  buttonText="View Details"
-                  buttonColor="bg-green-500"
-                />
-                {/* More completed rooms... */}
+                {rooms && rooms.map((room: any) => (
+                  <RoomCard 
+                    key={room.id}  // Unique key for each room
+                    title={room.title}  // Room title
+                    description={room.description}  // Room description
+                    buttonText="View Details"
+                    buttonColor="bg-green-500"
+                  />
+                ))}
               </div>
             </div>
           </main>

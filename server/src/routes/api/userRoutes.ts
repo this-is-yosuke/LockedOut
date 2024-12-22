@@ -18,6 +18,29 @@ router.get('/', async (_req: Request, res: Response) => {
     }
 });
 
+// Get a user by username (add this route)
+router.get('/getByUsername', async (req: Request, res: Response) => {
+    const username = req.query.username as string | undefined; // Typecast to string | undefined
+    if (!username) {
+        return res.status(400).json({ message: 'Username is required' });
+    }
+
+    try {
+        const user = await User.findOne({
+            where: { username },
+            include: [{ model: Room, as: 'rooms' }, { model: Room, as: 'roomsCreated/Creator' }],
+            attributes: { exclude: ['password'] }
+        });
+        if (user) {
+            return res.json(user); // Returning the user data
+        } else {
+            return res.status(404).json({ message: 'User not found' }); // Returning 404 if user is not found
+        }
+    } catch (error: any) {
+        return res.status(500).json({ message: error.message }); // Catching errors and returning 500
+    }
+});
+
 // Get a user by id
 router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
