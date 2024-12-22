@@ -6,6 +6,7 @@ import sequelize from './config/connection.js';
 import routes from './routes/index.js';
 import { roomRouter } from './routes/api/roomRoutes.js'; // Import the room routes
 import { userRouter } from './routes/api/userRoutes.js';
+import  Router from './routes/auth.routes.js';
 import cors from 'cors';
 
 const app = express();
@@ -32,6 +33,7 @@ app.use(express.static('../client/dist'));
 // Routes
 app.use('/api/room', roomRouter); // Add room routes
 app.use('/api', routes); // Add other routes (this is for your general API routes)
+app.use('/auth', Router);
 app.use('/api/users', userRouter);  // Ensure this line is present!
 
 
