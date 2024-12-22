@@ -9,7 +9,9 @@ const router = express.Router();
 router.get('/', async (_req: Request, res: Response) => {
     try {
         const users = await User.findAll({
-            include: [{ model: Room, as: 'rooms' }, { model: Room, as: 'roomsCreated' }],
+
+            include: [{model: Room, as: 'rooms'}, {model: Room, as: 'roomsCreated/Creator'}],
+            // room model goes in the brackets
             attributes: { exclude: ['password'] }
         });
         res.json(users);
@@ -23,7 +25,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const user = await User.findByPk(id, {
-            include: [{ model: Room, as: 'rooms' }],
+            include: [{model: Room, as: 'rooms'}, {model: Room, as: 'roomsCreated/Creator'}], 
             attributes: { exclude: ['password'] }
         });
         if (user) {
