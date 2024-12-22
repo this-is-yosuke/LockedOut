@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Footer } from '../containers';
 import { useEffect, useState } from 'react';
 import { useUser } from '../contexts'; // Import the useUser hook
+import {Lock, Plus } from '../assets'
 
 const User: React.FC = () => {
   const { user } = useUser(); // Access user data from context
@@ -60,7 +61,7 @@ const User: React.FC = () => {
 
           {/* Left Side: User Info */}
           <ProfileCard 
-            avatar="https://via.placeholder.com/150"  // You can replace this with user's avatar if available
+            avatar={Lock}  // You can replace this with user's avatar if available
             name={username}  // Dynamically render the user's name
             email={email}    // Dynamically render the user's email
             roomsCreated={roomsCreatedCount} // Dynamically render the count of rooms created
@@ -69,6 +70,15 @@ const User: React.FC = () => {
 
           {/* Right Side: User's Escape Rooms */}
           <main className="w-full lg:w-2/3 bg-stone-900 p-6">
+                     {/* Link to Create Room */}
+                     <div className="mb-6 flex justify-end">
+  <a
+    href="/createRroom" // This should be the route where users can create a new room
+    className="text-lg text-blue-100 hover:underline"
+  >
+    <img src={Plus} className="w-6 h-6 mr-2 inline-block" /> Create A Room
+  </a>
+</div>
             <h2 className="text-3xl font-semibold text-stone-100 mb-6">Your Escape Rooms</h2>
 
             {/* Created Rooms Section */}
