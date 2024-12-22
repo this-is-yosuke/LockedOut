@@ -31,6 +31,9 @@ const Login: React.FC = () => {
       console.log("Login success data:", data); // Debugging: check data returned from API
       loginUser({ username: loginData.username, token: data.token }); // Update context with user data
 
+      // Save user data to localStorage
+      localStorage.setItem('user', JSON.stringify({ username: loginData.username, token: data.token }));
+
       // Redirect to homepage after successful login
       navigate('/'); // Redirect to homepage (or another page if needed)
     } catch (err) {
