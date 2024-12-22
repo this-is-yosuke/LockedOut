@@ -16,12 +16,14 @@ const User: React.FC = () => {
   // Fetch user data when the component mounts
   useEffect(() => {
     if (user?.token && user?.username) {
-      console.log("Fetching data for user:", user.username); // Log the user we're fetching data for
+      console.log("Fetching data for user:", user.username, "token is", user.token); // Log the user we're fetching data for
   
       axios.get('/api/users/getByUsername', {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
         params: {
-          username: user.username,
-          token: user.token,
+          username: user.username, // Still pass the username as a query parameter if needed
         },
       })
         .then((response) => {

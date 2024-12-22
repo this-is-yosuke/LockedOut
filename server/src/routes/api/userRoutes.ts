@@ -1,9 +1,37 @@
 import express from 'express';
-import type { Request, Response } from 'express';
-import { User, Room } from '../../models/index.js';
-import { Riddle } from '../../models'; 
+import { Request, Response } from 'express';
+import { User, Room, Riddle } from '../../models/index.js';
+import { riddleToken } from '../../middleware/auth.js'; // Import the riddleToken middleware
 
 const router = express.Router();
+
+// Use the riddleToken middleware for this route
+router.get('/getByUsername', riddleToken, async (req: Request, res: Response) => {
+    const { username } = req.query;
+  
+    if (typeof username === 'string') {
+      try {
+        const user = await User.findOne({
+          where: { username },
+          include: [
+            { model: Room, as: 'rooms' },
+            { model: Riddle, as: 'riddles' },
+          ],
+          attributes: { exclude: ['password'] },
+        });
+  
+        if (user) {
+          res.json(user);
+        } else {
+          res.status(404).json({ message: 'User not found' });
+        }
+      } catch (error: any) {
+        res.status(500).json({ message: 'Error fetching user data', error: error.message });
+      }
+    } else {
+      res.status(400).json({ message: 'Invalid input. Username must be a string.' });
+    }
+  });
 
 // Get all users
 router.get('/', async (_req: Request, res: Response) => {
@@ -13,13 +41,18 @@ router.get('/', async (_req: Request, res: Response) => {
             attributes: { exclude: ['password'] }
         });
         res.json(users);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
+    } catch (error: unknown) {
+        // Handle the unknown error type
+        if (error instanceof Error) {
+            res.status(500).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: 'An unexpected error occurred' });
+        }
     }
 });
 
 // Get a user by id
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', riddleToken, async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const user = await User.findByPk(id, {
@@ -31,61 +64,35 @@ router.get('/:id', async (req: Request, res: Response) => {
         } else {
             res.status(404).json({ message: 'User not found' });
         }
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-
-router.get('/getByUsername', async (req: Request, res: Response) => {
-    const { username, token } = req.query; // Extract the username and token from query params
-
-    try {
-        if (typeof username === 'string' && typeof token === 'string') {
-            // Optionally, validate the token here
-            const user = await User.findOne({
-                where: { username }, // Query by username, not user.id
-                include: [
-                    { model: Room, as: 'rooms' }, // Include rooms associated with the user
-                    { model: Riddle, as: 'riddles' } // Include riddles in the room
-                ],
-                attributes: { exclude: ['password'] }, // Optionally exclude sensitive data
-            });
-
-            if (user) {
-                res.json(user); // Send the user data if found
-            } else {
-                res.status(404).json({ message: 'User not found' });
-            }
-        } else {
-            res.status(400).json({ message: 'Invalid input' });
-        }
     } catch (error: unknown) {
-        // Check if the error is an instance of Error before accessing its message
+        // Handle the unknown error type
         if (error instanceof Error) {
-            console.error('Error fetching user:', error.message); // Log the error message
             res.status(500).json({ message: error.message });
         } else {
-            // If the error is not an instance of Error, handle it as a generic unknown error
-            console.error('Unknown error:', error);
-            res.status(500).json({ message: 'An unknown error occurred' });
+            res.status(500).json({ message: 'An unexpected error occurred' });
         }
     }
 });
 
 // Create a new user POST
 router.post('/', async (req: Request, res: Response) => {
+    console.log("Request body:", req.body); // Log the incoming request body
     const { username, email, password } = req.body;
     try {
         const newUser = await User.create({ username, email, password });
         res.status(201).json(newUser);
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
+    } catch (error: unknown) {
+        // Handle the unknown error type
+        if (error instanceof Error) {
+            res.status(400).json({ message: error.message });
+        } else {
+            res.status(400).json({ message: 'An unexpected error occurred' });
+        }
     }
 });
 
 // PUT /users/:id - Update a user by id
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:id', riddleToken, async (req: Request, res: Response) => {
     const { id } = req.params;
     const { username, password } = req.body;
     try {
@@ -98,13 +105,18 @@ router.put('/:id', async (req: Request, res: Response) => {
         } else {
             res.status(404).json({ message: 'User not found' });
         }
-    } catch (error: any) {
-        res.status(400).json({ message: error.message });
+    } catch (error: unknown) {
+        // Handle the unknown error type
+        if (error instanceof Error) {
+            res.status(400).json({ message: error.message });
+        } else {
+            res.status(400).json({ message: 'An unexpected error occurred' });
+        }
     }
 });
 
 // DELETE /users/:id - Delete a user by id
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', riddleToken, async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const user = await User.findByPk(id);
@@ -114,8 +126,13 @@ router.delete('/:id', async (req: Request, res: Response) => {
         } else {
             res.status(404).json({ message: 'User not found' });
         }
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
+    } catch (error: unknown) {
+        // Handle the unknown error type
+        if (error instanceof Error) {
+            res.status(500).json({ message: error.message });
+        } else {
+            res.status(500).json({ message: 'An unexpected error occurred' });
+        }
     }
 });
 
