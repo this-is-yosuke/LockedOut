@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Nav, Footer } from '../containers';
+import { useLocation } from 'react-router-dom';
 
 interface FormData {
   roomName: string;
@@ -24,6 +25,9 @@ interface FormData {
 }
 
 const CreateRoom: React.FC = () => {
+  const location = useLocation();
+  const [user, setUser] = useState<any>(null);
+  const { user: userState } = location.state || {}; // Getting the user object from location state
   const [formData, setFormData] = useState<FormData>({
     roomName: '',
     roomDescription: '',
@@ -47,6 +51,88 @@ const CreateRoom: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loadingRiddles, setLoadingRiddles] = useState(false);
   const [riddleError, setRiddleError] = useState('');
+
+  // Fetch the user data from the backend using the username from location state
+  useEffect(() => {
+    if (userState?.username) {
+      const fetchUserByUsername = async () => {
+        try {
+          const response = await axios.get('http://localhost:3001/api/getByUsername', {
+            params: { username: userState.username }
+          });
+          setUser(response.data); // Set the fetched user data, including the id
+        } catch (error) {
+          console.error('Error fetching user:', error);
+        }
+      };
+      fetchUserByUsername();
+    }
+  }, [userState?.username]);
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    // Validate room fields
+    if (!formData.roomName) newErrors.roomName = 'Room name is required';
+    if (!formData.roomDescription) newErrors.roomDescription = 'Room description is required';
+    if (!formData.roomDifficulty) newErrors.roomDifficulty = 'Room difficulty is required';
+    if (!formData.roomType) newErrors.roomType = 'Room type is required';
+
+    // Validate riddle fields
+    if (!formData.riddleOneText || !formData.riddleOneAnswer) newErrors.riddleOne = 'Riddle one must have both text and answer';
+    if (!formData.riddleTwoText || !formData.riddleTwoAnswer) newErrors.riddleTwo = 'Riddle two must have both text and answer';
+    if (!formData.riddleThreeText || !formData.riddleThreeAnswer) newErrors.riddleThree = 'Riddle three must have both text and answer';
+    if (!formData.riddleFourText || !formData.riddleFourAnswer) newErrors.riddleFour = 'Riddle four must have both text and answer';
+
+    return newErrors;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Ensure user is fetched before submitting
+    if (!user?.id) {
+      alert('User ID is not available.');
+      return;
+    }
+
+    console.log(user.id, "user id");
+
+    const formDataToSend = {
+      title: formData.roomName,
+      description: formData.roomDescription,
+      type: formData.roomType,
+      difficulty: Number(formData.roomDifficulty),
+      image: formData.roomImage,
+      creatorID: user.id, // Use the user.id here
+      riddles: [
+        { content: formData.riddleOneText, answer: formData.riddleOneAnswer, name: formData.riddleOneName },
+        { content: formData.riddleTwoText, answer: formData.riddleTwoAnswer, name: formData.riddleTwoName },
+        { content: formData.riddleThreeText, answer: formData.riddleThreeAnswer, name: formData.riddleThreeName },
+        { content: formData.riddleFourText, answer: formData.riddleFourAnswer, name: formData.riddleFourName },
+      ],
+    };
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/rooms', formDataToSend);
+      console.log('Room creation response:', response);
+      alert('Room created successfully');
+    } catch (error) {
+      console.error('Error creating room:', error);
+      alert('Failed to create room and riddles');
+    }
+  };
 
   const fetchRiddle = async (riddleNumber: number) => {
     setLoadingRiddles(true);
@@ -80,39 +166,6 @@ const CreateRoom: React.FC = () => {
       setLoadingRiddles(false);
     }
   };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formDataToSend = {
-      title: formData.roomName,
-      description: formData.roomDescription,
-      type: formData.roomType,
-      difficulty: Number(formData.roomDifficulty),
-      image: formData.roomImage,
-      creatorID: 1,
-      riddles: [
-        { content: formData.riddleOneText, answer: formData.riddleOneAnswer, name: formData.riddleOneName },
-        { content: formData.riddleTwoText, answer: formData.riddleTwoAnswer, name: formData.riddleTwoName },
-        { content: formData.riddleThreeText, answer: formData.riddleThreeAnswer, name: formData.riddleThreeName },
-        { content: formData.riddleFourText, answer: formData.riddleFourAnswer, name: formData.riddleFourName },
-      ],
-    };
-
-    try {
-      const response = await axios.post('http://localhost:3001/api/rooms', formDataToSend);
-      console.log('Room creation response:', response);
-      alert('Room created successfully');
-    } catch (error) {
-      console.error('Error creating room:', error);
-      alert('Failed to create room and riddles');
-    }
-  };
-
 
   return (
     <>
