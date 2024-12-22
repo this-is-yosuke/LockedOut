@@ -2,6 +2,8 @@ import { Nav, Footer } from '../containers';
 import { useState } from 'react';
 import axios from 'axios';
 
+// Inside the CreateRoom component
+
 interface FormData {
   roomName: string;
   roomDescription: string;

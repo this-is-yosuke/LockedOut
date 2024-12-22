@@ -1,8 +1,54 @@
 import { Nav } from '../containers'; // Ensure the correct path for Nav
 import { ProfileCard, RoomCard, SectionTitle } from '../components/';
-import {Footer} from '../containers'
+import axios from 'axios';
+import { Footer } from '../containers';
+import { useEffect, useState } from 'react';
+import { useUser } from '../contexts'; // Import the useUser hook
 
 const User: React.FC = () => {
+  const { user } = useUser(); // Access user data from context
+  const [userData, setUserData] = useState<any>(null); // State to store user data from API
+  const [error, setError] = useState<string | null>(null); // State to handle errors
+
+  // Log user object to verify if it's correctly loaded from context
+  console.log("User from context:", user);
+
+  // Fetch user data when the component mounts
+  useEffect(() => {
+    if (user?.token && user?.username) {
+      console.log("Fetching data for user:", user.username); // Log the user we're fetching data for
+  
+      axios.get('/api/users/getByUsername', {
+        params: {
+          username: user.username,
+          token: user.token,
+        },
+      })
+        .then((response) => {
+          console.log("User data fetched successfully:", response.data); // Log the fetched user data
+          setUserData(response.data); // Store fetched user data
+        })
+        .catch((err) => {
+          setError('Error loading user data');
+          console.error("Error fetching user data:", err.response?.data || err.message || err); // Log error details
+        });
+    } else {
+      console.log("No token or username available, skipping user data fetch"); // Log if no token or username is available
+    }
+  }, [user?.token, user?.username]); // Dependency array to re-fetch if user changes
+
+  
+  // Log when userData is being rendered
+  console.log("Rendering user data:", userData);
+
+  // Conditional rendering based on userData
+  if (!userData) {
+    return (
+      <div className="text-gray-500">Loading user data...</div>
+    );
+  }
+
+  
   return (
     <>
       <Nav />

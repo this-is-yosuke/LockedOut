@@ -40,7 +40,14 @@ const NavMenu: React.FC = () => {
             </>
           ) : (
             <>
-              <span className="text-gray-300 px-3 py-2 rounded-md text-sm font-medium">Welcome, {user.username}!</span>
+              {/* Link to user profile page */}
+              <Link 
+                to={`/user/${user.username}`} // Link to the user's profile page
+                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Welcome, {user.username}!
+              </Link>
+
               <button
                 onClick={logout}
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
