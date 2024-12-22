@@ -5,10 +5,15 @@ import { Footer } from '../containers';
 import { useEffect, useState } from 'react';
 import { useUser } from '../contexts'; // Import the useUser hook
 import {Lock, Plus } from '../assets'
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
+
+
 
 const User: React.FC = () => {
   const { user } = useUser(); // Access user data from context
   const [userData, setUserData] = useState<any>(null); // State to store user data from API
+  const navigate = useNavigate(); // Initialize useNavigate
 
   // Log user object to verify if it's correctly loaded from context
   console.log("User from context:", user);
@@ -41,6 +46,12 @@ const User: React.FC = () => {
   // Log when userData is being rendered
   console.log("Rendering user data:", userData);
 
+  const handleCreateRoomClick = () => {
+    // Navigate to CreateRoom and pass user data via state
+    navigate('/createroom', { state: { user } });
+  };
+
+
   // Conditional rendering based on userData
   if (!userData) {
     return (
@@ -71,14 +82,15 @@ const User: React.FC = () => {
           {/* Right Side: User's Escape Rooms */}
           <main className="w-full lg:w-2/3 bg-stone-900 p-6">
                      {/* Link to Create Room */}
-                     <div className="mb-6 flex justify-end">
-  <a
-    href="/createroom" // This should be the route where users can create a new room
-    className="text-lg text-blue-100 hover:underline"
-  >
-    <img src={Plus} className="w-6 h-6 mr-2 inline-block" /> Create A Room
-  </a>
-</div>
+                                 {/* Link to Create Room */}
+            <div className="mb-6 flex justify-end">
+              <a 
+                onClick={handleCreateRoomClick} // Trigger navigation on click
+                className="text-lg text-blue-100 hover:underline cursor-pointer"
+              >
+                <img src={Plus} className="w-6 h-6 mr-2 inline-block" /> Create A Room
+              </a>
+            </div>
             <h2 className="text-3xl font-semibold text-stone-100 mb-6">Your Escape Rooms</h2>
 
             {/* Created Rooms Section */}
