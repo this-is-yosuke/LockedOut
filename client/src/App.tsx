@@ -16,9 +16,9 @@ function App() {
           
           <Route path="/room/:roomId" element={<ProtectedRoute><EscapeRoom /></ProtectedRoute>} />
           <Route path="/faq" element={<ProtectedRoute><FAQ/></ProtectedRoute>} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/createroom" element={<CreateRoom />} />
+          <Route path="/register" element={<ProtectedRoute><Register/></ProtectedRoute>} />
+          <Route path="/contact" element={<ProtectedRoute><Contact/></ProtectedRoute>} />
+          <Route path="/createroom" element={<ProtectedRoute><CreateRoom /></ProtectedRoute>} />
         </Routes>
       </div>
     </BrowserRouter>
