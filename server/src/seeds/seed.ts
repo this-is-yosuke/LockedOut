@@ -1,7 +1,7 @@
 import { User, Room, Riddle } from '../models/index.js';
-import userSeedData from './userSeedData.json' assert {type: 'json'};
-import roomSeedData from './roomSeedData.json' assert {type: 'json'};
-import riddleSeedData from './riddleSeedData.json' assert {type: 'json'};
+import userSeedData from './userSeedData.json' with {type: 'json'};
+import roomSeedData from './roomSeedData.json' with {type: 'json'};
+import riddleSeedData from './riddleSeedData.json' with {type: 'json'};
 
 export const seedDatabase = async () => {
     const users = await User.bulkCreate(userSeedData, {
