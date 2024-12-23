@@ -45,7 +45,7 @@ const Try = () => {
   const fetchRandomRooms = async () => {
     setLoading(true);
     setRooms([]); // Reset rooms array
-    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 10) + 1);
+    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 6) + 1);
     for (let id of randomIds) {
       await fetchRoomById(id);
     }
