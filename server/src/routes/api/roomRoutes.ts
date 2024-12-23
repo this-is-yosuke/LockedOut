@@ -10,8 +10,8 @@ router.get('/', async (_req: Request, res: Response) => {
     try {
         const rooms = await Room.findAll({
             include: [
-                { model: User, as: 'roomsCreated' }, // Adjusted alias to match model definition
-                { model: User, as: 'participants' }, // Example alias for participants, adjust as necessary
+                { model: User, as: 'roomsCreated/Creator' }, // Adjusted alias to match model definition
+                { model: User}, // Example alias for participants, adjust as necessary
                 { model: Riddle, as: 'riddles' } // Ensure alias matches model definition
             ],
         });
@@ -27,8 +27,8 @@ router.get('/:id', async (req: Request, res: Response) => {
     try {
         const room = await Room.findByPk(req.params.id, {
             include: [
-                { model: User, as: 'roomsCreated' },
-                { model: User, as: 'participants' },
+                { model: User, as: 'roomsCreated/Creator' },
+                { model: User},
                 { model: Riddle, as: 'riddles' }
             ],
         });
