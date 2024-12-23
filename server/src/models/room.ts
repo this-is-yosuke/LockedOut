@@ -45,11 +45,6 @@ export function RoomFactory(sequelize: Sequelize) {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-            creatorID: {
-                type: DataTypes.INTEGER, // Assuming the creatorID is an integer (referring to User's ID)
-                allowNull: false,
-                defaultValue: 1 // Set your desired default value here (e.g., 1)
-            }
         },
         {
             sequelize,
