@@ -5,7 +5,7 @@ const retrieveUsers = async () => {
         const response = await fetch('/api/users', {
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Player ${Auth.getToken()}` // passing authorization token
+                Authorization: `Bearer ${Auth.getToken()}` // passing authorization token
             }
         });
         const data = await response.json();
