@@ -51,6 +51,7 @@ const CreateRoom: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loadingRiddles, setLoadingRiddles] = useState(false);
   const [riddleError, setRiddleError] = useState('');
+  const [userLoading, setUserLoading] = useState(true); // Add state to track user fetching status
 
   // Fetch the user data from the backend using the username from location state
   useEffect(() => {
@@ -58,11 +59,14 @@ const CreateRoom: React.FC = () => {
       const fetchUserByUsername = async () => {
         try {
           const response = await axios.get('http://localhost:3001/api/getByUsername', {
-            params: { username: userState.username }
+            params: { username: userState.username },
           });
+          console.log('Fetched user:', response.data); // Log the fetched user data
           setUser(response.data); // Set the fetched user data, including the id
+          setUserLoading(false); // Set loading to false after the user data is fetched
         } catch (error) {
           console.error('Error fetching user:', error);
+          setUserLoading(false); // Set loading to false even if there's an error
         }
       };
       fetchUserByUsername();
@@ -103,11 +107,10 @@ const CreateRoom: React.FC = () => {
 
     // Ensure user is fetched before submitting
     if (!user?.id) {
+      console.log('User data is invalid or missing:', user); // Log if the user is missing or invalid
       alert('User ID is not available.');
       return;
     }
-
-    console.log(user.id, "user id");
 
     const formDataToSend = {
       title: formData.roomName,
@@ -126,10 +129,10 @@ const CreateRoom: React.FC = () => {
 
     try {
       const response = await axios.post('http://localhost:3001/api/rooms', formDataToSend);
-      console.log('Room creation response:', response);
+      console.log('Room creation response:', response); // Log the response from the room creation API
       alert('Room created successfully');
     } catch (error) {
-      console.error('Error creating room:', error);
+      console.error('Error creating room:', error); // Log any errors that occur during room creation
       alert('Failed to create room and riddles');
     }
   };
@@ -166,6 +169,7 @@ const CreateRoom: React.FC = () => {
       setLoadingRiddles(false);
     }
   };
+
 
   return (
     <>

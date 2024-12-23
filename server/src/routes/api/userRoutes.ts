@@ -20,24 +20,38 @@ router.get('/', async (_req: Request, res: Response) => {
 
 // Get a user by username (add this route)
 router.get('/getByUsername', async (req: Request, res: Response) => {
-    const username = req.query.username as string | undefined; // Typecast to string | undefined
+    const username = req.query.username as string | undefined;
     if (!username) {
+        console.log('Username is missing or invalid');
         return res.status(400).json({ message: 'Username is required' });
     }
 
     try {
         const user = await User.findOne({
             where: { username },
-            include: [{ model: Room, as: 'rooms' }, { model: Room, as: 'roomsCreated/Creator' }],
+            include: [
+                {
+                    model: Room,
+                    as: 'rooms'
+                },
+                {
+                    model: Room,
+                    as: 'roomsCreated/Creator'
+                }
+            ],
             attributes: { exclude: ['password'] }
         });
+
         if (user) {
-            return res.json(user); // Returning the user data
+            console.log('User data found:', user);
+            return res.json(user);
         } else {
-            return res.status(404).json({ message: 'User not found' }); // Returning 404 if user is not found
+            console.log('User not found for username:', username);
+            return res.status(404).json({ message: 'User not found' });
         }
     } catch (error: any) {
-        return res.status(500).json({ message: error.message }); // Catching errors and returning 500
+        console.log('Error fetching user:', error);
+        return res.status(500).json({ message: error.message });
     }
 });
 
