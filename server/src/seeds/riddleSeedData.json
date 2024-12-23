@@ -1,8 +1,8 @@
 [
-    {"name": "Spoop", "content": "I do not have eyes, but once I did see. I had thoughts, but now I am empty. What am I?", "answer": "2", "position": 1, "roomId": 1},
-    {"name": "Aliens", "content": "Why did the alien couple break up?", "answer": "They needed space", "position": 1, "roomId": 2},
-    {"name": "Furniture", "content": "I have four legs, but I never walk. I have aback, but I cannot talk. What am I?", "answer": "Chair", "position": 1, "roomId": 3},
-    {"name": "dum1", "content": "Huh?(a:1)", "answer": "1", "position": 1, "roomId": 3},
+    {"name": "Javascript", "content": "I am a number that can't be changed, A fundamental piece in JavaScript, my value remains the same. You can access me with Math.PI, What number am I, tell me, don't lie.", "answer": "3", "position": 1, "roomId": 1},
+    {"name": "Javascript", "content": "I am an array with five elements in line, You ask for my length, and you get a number fine. let arr = [1, 2, 3, 4, 5];What number will you get when you ask for my size?", "answer": "5", "position": 2, "roomId": 1},
+    {"name": "Javascript", "content": "I am a number that JavaScript can't help but divide, No remainder left when divided by 2, I thrive. I am the smallest even number you see, What number am I, can you find me?", "answer": "2", "position": 3, "roomId": 1},
+    {"name": "Javascript", "content": "When divided by 3, I leave no remainder, But when divided by 2, I give you one. 'm the smallest odd number,What number am I, can you guess?", "answer": "3", "position": 4, "roomId": 1},
     {"name": "dum2", "content": "????(a:2)", "answer": "2", "position": 1, "roomId": 2},
     {"name": "dum3", "content": "This has been a test of the national weather warning service(a:3).", "answer": "2", "position": 2, "roomId": 1},
     {"name": "pickles", "content": "Yum yum", "answer": "3", "position": 3, "roomId": 1},

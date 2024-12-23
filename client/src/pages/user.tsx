@@ -8,8 +8,6 @@ import {Lock, Plus } from '../assets'
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 
-
-
 const User: React.FC = () => {
   const { user } = useUser(); // Access user data from context
   const [userData, setUserData] = useState<any>(null); // State to store user data from API

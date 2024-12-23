@@ -7,6 +7,7 @@ import routes from './routes/index.js';
 import { roomRouter } from './routes/api/roomRoutes.js'; // Import the room routes
 import { userRouter } from './routes/api/userRoutes.js';
 import { riddleRouter } from './routes/api/riddleRoutes.js'; // Import the riddle routes
+import  attemptRoutes  from './routes/api/user-attempt.js'; // Import the riddle routes
 import  Router from './routes/auth.routes.js';
 import cors from 'cors';
 
@@ -37,6 +38,7 @@ app.use('/api/riddles', riddleRouter); // Add riddle routes
 app.use('/api', routes); // Add other routes (this is for your general API routes)
 app.use('/auth', Router);
 app.use('/api/users', userRouter);  // Ensure this line is present!
+app.use('/api/attempts', attemptRoutes); 
 
 
 
