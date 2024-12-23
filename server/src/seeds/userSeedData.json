@@ -2,5 +2,7 @@
     {"username": "Jayson", "email": "jayson@gmail.com", "password": "pass"},
     {"username": "Hook", "email": "hook@gmail.com", "password": "pass"},
     {"username": "Lt.Data", "email": "ltdata@gmail.com", "password": "pass"},
-    {"username": "Dummy1", "email": "dummy1@gmail.com", "password": "pass"}
+    {"username": "DummyUser1", "email": "dummy1@gmail.com", "password": "pass"},
+    {"username": "DummyUser2", "email": "dummy2@gmail.com", "password": "pass"},
+    {"username": "DummyUser3", "email": "dummy3@gmail.com", "password": "pass"}
 ]
