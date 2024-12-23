@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom'; // Import useParams f
 const CountdownTimer: React.FC<{ onTimeUp: () => void }> = ({ onTimeUp }) => {
   const targetTime = new Date().getTime() + 30 * 60 * 1000; // 30 minutes countdown
   const [timeLeft, setTimeLeft] = useState(targetTime - new Date().getTime());
+//   
 
   useEffect(() => {
     const interval = setInterval(() => {

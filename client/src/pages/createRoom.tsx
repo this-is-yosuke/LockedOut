@@ -58,7 +58,7 @@ const CreateRoom: React.FC = () => {
     if (userState?.username) {
       const fetchUserByUsername = async () => {
         try {
-          const response = await axios.get('http://localhost:3001/api/getByUsername', {
+          const response = await axios.get('http://localhost:3001/api/users/getByUsername', {
             params: { username: userState.username },
           });
           console.log('Fetched user:', response.data); // Log the fetched user data
