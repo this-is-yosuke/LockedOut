@@ -10,7 +10,7 @@ export const register = async (req: Request, res: Response) => {
         const user = await User.create({ username, email, password });
         const secretKey = process.env.JWT_SECRET_KEY || '';
         
-        const token = jwt.sign({ id:user.id, username: user.username, email: user.email }, secretKey, { expiresIn: '1h' }); //attaching username, id and email to token
+        const token = jwt.sign({ id:user.userId, username: user.username, email: user.email }, secretKey, { expiresIn: '1h' }); //attaching username, id and email to token
         return res.status(200).json({ token }); //register username, email and id
     } catch (error) {
     console.log(error);
@@ -36,7 +36,7 @@ export const login = async (req: Request, res: Response) => {
 
     const secretKey = process.env.JWT_SECRET_KEY || '';
 
-    const token = jwt.sign({ id:user.id, username: user.username, email: user.email }, secretKey, { expiresIn: '1h' }); //attaching username, id and email to token
+    const token = jwt.sign({ id:user.userId, username: user.username, email: user.email }, secretKey, { expiresIn: '1h' }); //attaching username, id and email to token
     return res.json({ token });
 };
 

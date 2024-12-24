@@ -15,7 +15,7 @@ import { Room } from './room';
 
 export class User
     extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
-    declare id: CreationOptional<number>;
+    declare userId: CreationOptional<number>;
     declare username: string;
     declare email: string;
     declare password: string;
@@ -37,7 +37,7 @@ export class User
 export function UserFactory(sequelize: Sequelize) {
     User.init(
         {
-            id: {
+            userId: {
                 type: DataTypes.INTEGER,
                 autoIncrement: true,
                 primaryKey: true,

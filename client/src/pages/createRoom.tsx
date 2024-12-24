@@ -106,7 +106,7 @@ const CreateRoom: React.FC = () => {
     }
 
     // Ensure user is fetched before submitting
-    if (!user?.id) {
+    if (!user?.userId) {
       console.log('User data is invalid or missing:', user); // Log if the user is missing or invalid
       alert('User ID is not available.');
       return;
@@ -118,7 +118,7 @@ const CreateRoom: React.FC = () => {
       type: formData.roomType,
       difficulty: Number(formData.roomDifficulty),
       image: formData.roomImage,
-      creatorID: user.id, // Use the user.id here
+      creatorID: user.userId, // Use the user.id here
       riddles: [
         { content: formData.riddleOneText, answer: formData.riddleOneAnswer, name: formData.riddleOneName },
         { content: formData.riddleTwoText, answer: formData.riddleTwoAnswer, name: formData.riddleTwoName },
