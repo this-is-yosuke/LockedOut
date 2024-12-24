@@ -41,6 +41,18 @@ Room.belongsToMany(User, {
     through: 'Attempt',
 });
 
+// In User model
+User.hasMany(Room, {
+    foreignKey: 'creatorID', // Make sure the foreign key in Room is 'creatorID'
+    as: 'roomsCreated', // Alias for the rooms created by this user
+});
+
+// In Room model
+Room.belongsTo(User, {
+    foreignKey: 'creatorID',
+    as: 'Creator', // Alias for the creator (user who created the room)
+});
+
 // A single room has many riddles
 Room.hasMany(Riddle, {
     onDelete: 'CASCADE',

@@ -36,7 +36,7 @@ router.get('/getByUsername', async (req: Request, res: Response) => {
                 },
                 {
                     model: Room,
-                    as: 'roomsCreated/Creator'
+                    as: 'roomsCreated'
                 }
             ],
             attributes: { exclude: ['password'] }
@@ -60,8 +60,11 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const user = await User.findByPk(id, {
-            include: [{model: Room, as: 'rooms'}, {model: Room, as: 'roomsCreated/Creator'}], 
-            attributes: { exclude: ['password'] }
+            include: [
+                { model: Room, as: 'rooms' }, // Alias for the rooms the user has participated in
+                { model: Room, as: 'roomsCreated' } // Alias for the rooms the user has created
+            ],
+            attributes: { exclude: ['password'] },
         });
         if (user) {
             res.json(user);
