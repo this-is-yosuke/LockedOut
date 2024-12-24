@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', async (_req: Request, res: Response) => {
     try {
         const users = await User.findAll({
-            include: [{model: Room, as: 'rooms'}, {model: Room, as: 'roomsCreated/Creator'}],
+            include: [{model: Room, as: 'rooms'}, {model: Room, as: 'roomsCreated'}],
             // room model goes in the brackets
             attributes: { exclude: ['password'] }
         });
