@@ -25,7 +25,15 @@ const User = UserFactory(sequelize);
 User.hasMany(Room, {
     onDelete: 'CASCADE',
     as: 'roomsCreated/Creator',
+<<<<<<< HEAD
+<<<<<<< HEAD
+    //foreignKey: 'id',
+=======
     foreignKey: 'userId',
+>>>>>>> fb16d41bbd86698a31562b46326bc93a39cc0ad7
+=======
+    foreignKey: 'userId',
+>>>>>>> be4a96a9effb07708243b353b952295e3dca7665
 });
 
 
