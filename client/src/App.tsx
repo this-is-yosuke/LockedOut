@@ -16,7 +16,7 @@ function App() {
           
           <Route path="/room/:roomId" element={<ProtectedRoute><EscapeRoom /></ProtectedRoute>} />
           <Route path="/faq" element={<ProtectedRoute><FAQ/></ProtectedRoute>} />
-          <Route path="/register" element={<ProtectedRoute><Register/></ProtectedRoute>} />
+          <Route path="/register" element={<Register />} />
           <Route path="/contact" element={<ProtectedRoute><Contact/></ProtectedRoute>} />
           <Route path="/createroom" element={<ProtectedRoute><CreateRoom /></ProtectedRoute>} />
         </Routes>
