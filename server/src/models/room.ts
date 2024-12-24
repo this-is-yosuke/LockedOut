@@ -10,10 +10,10 @@ export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<R
     declare type: string;
     declare difficulty: number;
     declare image: string;
-    declare creatorID: ForeignKey<User['id']>;
+    declare creatorID: ForeignKey<User['userId']>;
     // Declaring the many-to-many
-    declare addUsers: BelongsToManyAddAssociationMixin<User[], User['id'][]>; 
-    declare addUser: BelongsToManyAddAssociationMixin<User, User['id']>;
+    declare addUsers: BelongsToManyAddAssociationMixin<User[], User['userId'][]>; 
+    declare addUser: BelongsToManyAddAssociationMixin<User, User['userId']>;
 }
 
 export function RoomFactory(sequelize: Sequelize) {

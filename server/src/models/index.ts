@@ -25,11 +25,11 @@ const User = UserFactory(sequelize);
 User.hasMany(Room, {
     onDelete: 'CASCADE',
     as: 'roomsCreated/Creator',
-    //foreignKey: 'id',
+    foreignKey: 'userId',
 });
 
 
-Room.belongsTo(User, {as: 'roomsCreated/Creator', foreignKey: 'id'});
+Room.belongsTo(User, {as: 'roomsCreated/Creator', foreignKey: 'userId'});
 
 // The many Users - to - many Rooms association
 User.belongsToMany(Room, {
