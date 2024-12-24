@@ -76,7 +76,7 @@ router.post('/', async (req: Request, res: Response) => {
             },
             { transaction }
         );
-/*
+
         // Step 2: Prepare the riddles associated with the new room
         const riddleEntries = riddles.map((riddle: any, index: number) => ({
             ...riddle,
@@ -86,12 +86,12 @@ router.post('/', async (req: Request, res: Response) => {
 
         // Step 3: Create riddles in bulk
         await Riddle.bulkCreate(riddleEntries, { transaction });
-*/
+
         // Commit the transaction
         await transaction.commit();
 
         // Send back the newly created room and riddles as response
-        return res.status(201).json({ room: newRoom, riddles: [] });
+        return res.status(201).json({ room: newRoom, riddleEntries });
     } catch (error) {
         await transaction.rollback();
         console.error('Transaction failed:', error);
