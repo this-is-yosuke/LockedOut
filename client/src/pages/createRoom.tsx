@@ -91,10 +91,57 @@ const CreateRoom: React.FC = () => {
     return newErrors;
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+  interface ModalProps {
+    message: string;
+    onClose: () => void;
+  }
+  
+  const Modal: React.FC<ModalProps> = ({ message, onClose }) => {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
+          <h2 className="text-lg font-semibold mb-4">Invalid Input</h2>
+          <p className="text-sm mb-4">{message}</p>
+          <button
+            className="bg-blue-500 text-white py-2 px-4 rounded"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    );
   };
+
+const [modalMessage, setModalMessage] = useState<string | null>(null); // To store the modal message
+const [showModal, setShowModal] = useState(false); // To show or hide the modal
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const { name, value } = e.target;
+
+  // Check if the room type is "number" and validate the riddle answer
+  if (formData.roomType === 'number' && name.startsWith('riddle') && name.includes('Answer')) {
+    // Only allow digits 0-9 for the riddle answer and ensure it is a single digit
+    if (/[^0-9]/.test(value) || value.length > 1) {
+      setModalMessage('Please enter a single digit between 0-9 for the riddle answer.');
+      setShowModal(true); // Show the modal
+      return; // Prevent updating the state with invalid input
+    }
+  }
+
+  // Check if the room type is "alphabet" and validate the riddle answer
+  if (formData.roomType === 'letter' && name.startsWith('riddle') && name.includes('Answer')) {
+    // Only allow a single alphabet letter (a-z, A-Z)
+    if (/[^a-zA-Z]/.test(value) || value.length > 1) {
+      setModalMessage('Please enter a single alphabetic character (A-Z or a-z) for the riddle answer.');
+      setShowModal(true); // Show the modal
+      return; // Prevent updating the state with invalid input
+    }
+  }
+
+  // Update the form data with the new value if no validation issues
+  setFormData({ ...formData, [name]: value });
+};
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -173,6 +220,12 @@ const CreateRoom: React.FC = () => {
   return (
     <>
       <Nav />
+      {userLoading ? (
+  <div className="text-center">
+    <p>Loading user data...</p> {/* Show a message or loading spinner */}
+  </div>
+) : (
+  <>
       <section className="flex items-center justify-center min-h-screen m-6">
         <div className="flex bg-gray-800 rounded-lg shadow-lg overflow-hidden w-full max-w-4xl">
           <div className="w-full p-8 bg-stone-800">
@@ -509,6 +562,8 @@ const CreateRoom: React.FC = () => {
                 >
                   {loadingRiddles ? 'Loading...' : 'Generate Riddle'}
                 </button>
+                {riddleError && <p className="text-red-500">{riddleError}</p>}
+
               </fieldset>
 
               <hr className="m-8" />
@@ -523,7 +578,15 @@ const CreateRoom: React.FC = () => {
           </div>
         </div>
       </section>
-      <Footer />
+      <Footer />    {/* Conditionally render the modal */}
+      </>
+)}
+    {showModal && (
+      <Modal
+        message={modalMessage!} // Non-null assertion, modalMessage will not be null when shown
+        onClose={() => setShowModal(false)} // Close the modal when the user clicks close
+      />
+    )}
     </>
   );
 };
