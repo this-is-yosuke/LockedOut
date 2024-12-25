@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Nav, Footer } from '../containers';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // Import useNavigate
+
 
 interface FormData {
   roomName: string;
@@ -100,19 +101,33 @@ const CreateRoom: React.FC = () => {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm">
-          <h2 className="text-lg font-semibold mb-4">Invalid Input</h2>
-          <p className="text-sm mb-4">{message}</p>
+          <h2 className="text-lg font-semibold mb-4">{message}</h2>
+          <div className="flex flex-col gap-4 mt-6">
+
           <button
             className="bg-blue-500 text-white py-2 px-4 rounded"
-            onClick={onClose}
+            onClick={onClose} // This closes the modal and proceeds
           >
-            Close
+            Ok
           </button>
+          <button
+            className="bg-green-500 text-white py-2 px-4 rounded"
+            onClick={handleCreateAnotherRoom} // This clears form and lets user try again
+          >
+            Create Another Room
+          </button>
+          <button
+            className="bg-red-500 text-white py-2 px-4 rounded"
+            onClick={handleGoToUserPage} // This redirects the user to their user page
+          >
+            Go to User Page
+          </button>
+          </div>
         </div>
       </div>
     );
   };
-
+  
 const [modalMessage, setModalMessage] = useState<string | null>(null); // To store the modal message
 const [showModal, setShowModal] = useState(false); // To show or hide the modal
 
@@ -123,7 +138,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
   if (formData.roomType === 'number' && name.startsWith('riddle') && name.includes('Answer')) {
     // Only allow digits 0-9 for the riddle answer and ensure it is a single digit
     if (/[^0-9]/.test(value) || value.length > 1) {
-      setModalMessage('Please enter a single digit between 0-9 for the riddle answer.');
+      setModalMessage('Error: Please go back and enter a single digit between 0-9 for the riddle answer.');
       setShowModal(true); // Show the modal
       return; // Prevent updating the state with invalid input
     }
@@ -133,7 +148,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
   if (formData.roomType === 'letter' && name.startsWith('riddle') && name.includes('Answer')) {
     // Only allow a single alphabet letter (a-z, A-Z)
     if (/[^a-zA-Z]/.test(value) || value.length > 1) {
-      setModalMessage('Please enter a single alphabetic character (A-Z or a-z) for the riddle answer.');
+      setModalMessage('Error: Please enter a single alphabetic character (A-Z or a-z) for the riddle answer.');
       setShowModal(true); // Show the modal
       return; // Prevent updating the state with invalid input
     }
@@ -143,45 +158,71 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
   setFormData({ ...formData, [name]: value });
 };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+const navigate = useNavigate(); 
 
-    // Ensure user is fetched before submitting
-    if (!user?.userId) {
-      console.log('User data is invalid or missing:', user); // Log if the user is missing or invalid
-      alert('User ID is not available.');
-      return;
-    }
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  const newErrors = validateForm();
+  if (Object.keys(newErrors).length > 0) {
+    setErrors(newErrors);
+    return;
+  }
 
-    const formDataToSend = {
-      title: formData.roomName,
-      description: formData.roomDescription,
-      type: formData.roomType,
-      difficulty: Number(formData.roomDifficulty),
-      image: formData.roomImage,
-      creatorID: user.userId, // Use the user.id here
-      riddles: [
-        { content: formData.riddleOneText, answer: formData.riddleOneAnswer, name: formData.riddleOneName },
-        { content: formData.riddleTwoText, answer: formData.riddleTwoAnswer, name: formData.riddleTwoName },
-        { content: formData.riddleThreeText, answer: formData.riddleThreeAnswer, name: formData.riddleThreeName },
-        { content: formData.riddleFourText, answer: formData.riddleFourAnswer, name: formData.riddleFourName },
-      ],
-    };
-
-    try {
-      const response = await axios.post('http://localhost:3001/api/rooms', formDataToSend);
-      console.log('Room creation response:', response); // Log the response from the room creation API
-      alert('Room created successfully');
-    } catch (error) {
-      console.error('Error creating room:', error); // Log any errors that occur during room creation
-      alert('Failed to create room and riddles');
-    }
+  const formDataToSend = {
+    title: formData.roomName,
+    description: formData.roomDescription,
+    type: formData.roomType,
+    difficulty: Number(formData.roomDifficulty),
+    image: formData.roomImage,
+    creatorID: user?.userId,
+    riddles: [
+      { content: formData.riddleOneText, answer: formData.riddleOneAnswer, name: formData.riddleOneName },
+      { content: formData.riddleTwoText, answer: formData.riddleTwoAnswer, name: formData.riddleTwoName },
+    ],
   };
+
+  try {
+    await axios.post('http://localhost:3001/api/rooms', formDataToSend);
+    setModalMessage('Room created successfully! Would you like to create another one?');
+    setShowModal(true);
+  } catch (error) {
+    console.error('Error creating room:', error);
+    setModalMessage('Failed to create room.');
+    setShowModal(true);
+  }
+};
+
+const handleModalClose = () => {
+  setShowModal(false);
+  setModalMessage(null);
+};
+
+const handleCreateAnotherRoom = () => {
+  setFormData({
+    roomName: '',
+    roomDescription: '',
+    roomDifficulty: 0,
+    roomImage: '',
+    roomType: '',
+    riddleOneText: '',
+    riddleOneAnswer: '',
+    riddleOneName: '',
+    riddleTwoText: '',
+    riddleTwoAnswer: '',
+    riddleTwoName: '',
+    riddleThreeText: '',
+    riddleThreeAnswer: '',
+    riddleThreeName: '',
+    riddleFourText: '',
+    riddleFourAnswer: '',
+    riddleFourName: '',
+  });
+  setShowModal(false); // Close the modal
+};
+
+const handleGoToUserPage = () => {
+  navigate(`/user/${user?.username}`); // Navigate to the user's page
+};
 
   const fetchRiddle = async (riddleNumber: number) => {
     setLoadingRiddles(true);
@@ -581,12 +622,12 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElemen
       <Footer />    {/* Conditionally render the modal */}
       </>
 )}
-    {showModal && (
-      <Modal
-        message={modalMessage!} // Non-null assertion, modalMessage will not be null when shown
-        onClose={() => setShowModal(false)} // Close the modal when the user clicks close
-      />
-    )}
+{showModal && (
+  <Modal
+    message={modalMessage || ''}
+    onClose={handleModalClose} // Pass handleModalClose as the onClose prop
+  />
+)}
     </>
   );
 };
