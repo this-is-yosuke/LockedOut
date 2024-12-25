@@ -4,6 +4,7 @@ import { useUser } from '../contexts'; // Import useUser hook
 import { login } from '../api/authAPI'; // Assuming login API function
 import { Nav } from '../containers';
 import Lock from '../assets/lock.png';
+import { AxiosError } from 'axios'; // Import AxiosError type
 import type { UserLogin } from '../interfaces/UserLogin';
 
 const Login: React.FC = () => {
@@ -11,6 +12,7 @@ const Login: React.FC = () => {
     username: '',
     password: '',
   });
+  const [loginError, setLoginError] = useState<string | null>(null); // For storing error message
 
   // Get login function from UserContext
   const { login: loginUser } = useUser();
@@ -25,6 +27,7 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoginError(null); // Reset error message on new submit
 
     try {
       const data = await login(loginData); // Assuming this API returns user data with a token
@@ -37,7 +40,22 @@ const Login: React.FC = () => {
       // Redirect to homepage after successful login
       navigate('/'); // Redirect to homepage (or another page if needed)
     } catch (err) {
-      console.error('Failed to login', err);
+      console.error('Failed to login', err);  // Log full error for debugging
+
+      // Check if the error is an instance of AxiosError
+      if (err instanceof AxiosError && err.response) {
+        console.log("Axios error details:", err.response); // Log Axios error details for inspection
+
+        // Handle Axios error based on response status
+        if (err.response.status === 401) {
+          setLoginError('Invalid username or password. Please try again.');
+        } else {
+          setLoginError('An error occurred. Please try again later.');
+        }
+      } else {
+        // For any non-Axios error or unexpected error type
+        setLoginError('Please make sure your username and password are correct');
+      }
     }
   };
 
@@ -80,6 +98,12 @@ const Login: React.FC = () => {
                   required
                 />
               </div>
+
+              {/* Error message display */}
+              {loginError && (
+                <div className="text-red-500 mb-4 text-center">{loginError}</div>
+              )}
+
               <button
                 type="submit"
                 className="w-full p-3 bg-red-500 rounded-lg text-white text-lg font-semibold hover:bg-green-500"
