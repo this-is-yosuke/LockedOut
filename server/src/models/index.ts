@@ -2,11 +2,13 @@ import sequelize from '../config/connection.js';
 import { RiddleFactory } from './riddle.js';
 import { RoomFactory } from './room.js';
 import { UserFactory } from './user.js';
+import { AttemptFactory } from './attempt.js';
 
 // const Attempt = AttemptFactory(sequelize);
 const Riddle = RiddleFactory(sequelize);
 const Room = RoomFactory(sequelize);
 const User = UserFactory(sequelize);
+const Attempt = AttemptFactory(sequelize);
 
 // Association between models
 
@@ -62,4 +64,20 @@ Room.hasMany(Riddle, {
 // A riddle is in one room
 Riddle.belongsTo(Room);
 
-export { Riddle, Room, User, sequelize }; 
+// 1-TO-1 Between User and Attempt
+User.hasOne(Attempt, {
+    onDelete: 'CASCADE',
+    foreignKey: 'userId',
+});
+
+Attempt.belongsTo(User, {foreignKey: 'userId'});
+
+// 1-TO-MANY Between Attempt and Room
+Room.hasOne(Attempt, {
+    onDelete: 'CASCADE',
+    foreignKey: 'id'
+});
+
+Attempt.belongsTo(Room, {foreignKey: 'id'});
+
+export { Riddle, Room, User, Attempt, sequelize }; 

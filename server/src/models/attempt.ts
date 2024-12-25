@@ -1,13 +1,12 @@
 import {Model, 
-    type InferAttributes, type InferCreationAttributes, type Sequelize,
+    type InferAttributes, type InferCreationAttributes, type Sequelize, type CreationOptional,
     DataTypes, ForeignKey } from 'sequelize'
 import { Room } from './room';
 import { User } from './user';
 
 export class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttributes<Attempt>> {
-    declare id: number;
-    declare startTime: number;
-    declare endTime: number;
+    declare id: CreationOptional<number>;
+    declare duration: number;
     declare attemptNumber: number;
     declare isSuccessful: boolean;
     declare roomID: ForeignKey<Room['id']>
@@ -23,11 +22,7 @@ export function AttemptFactory(sequelize: Sequelize){
                 primaryKey: true,
                 allowNull: false
             },
-            startTime: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            endTime: {
+            duration: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
@@ -45,4 +40,5 @@ export function AttemptFactory(sequelize: Sequelize){
             sequelize
         }
     );
+    return Attempt;
 };
