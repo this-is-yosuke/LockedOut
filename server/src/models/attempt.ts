@@ -9,8 +9,8 @@ export class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttrib
     declare duration: number;
     declare attemptNumber: number;
     declare isSuccessful: boolean;
-    declare roomID: ForeignKey<Room['id']>
-    declare userID: ForeignKey<User['userId']>
+    declare roomId: ForeignKey<Room['id']>
+    declare userId: ForeignKey<User['userId']>
 }
 
 export function AttemptFactory(sequelize: Sequelize){
