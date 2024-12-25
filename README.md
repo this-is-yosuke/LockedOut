@@ -30,6 +30,12 @@ Welcome to Locked Out, the ultimate solo virtual escape room experience! In this
 
 - Bycrypt authentication: To further enhance security, our team used Bcrypt to handle password hashing. Rather than storing plain text passwords in the database, Bcrypt allowed us to securely hash users’ passwords before storing them. When users log in, their input password is hashed and compared to the stored hash. This ensures password security and prevents any sensitive information from being exposed, even if the database is compromised.
 
+## Website Screenshots
+- [Home](https://imgur.com/U0vQmlQ)
+- [About](https://imgur.com/gEc3xKH)
+- [Login](https://i.imgur.com/Ztgh6MK.jpeg)
+- [Riddle](https://imgur.com/vk9SBGC)
+
 
 ## Link to deployed website
 Link Coming Soon
@@ -48,7 +54,6 @@ If you'd like to edit the code, you can fork the repository onto your own local 
 
 ## Usage
 To use this project, simply clone or fork the repository to your local machine. Once you've done that, navigate to the project directory and run npm install (or yarn install) to download all the necessary dependencies listed in the package.json file. After the dependencies are installed, you can start the application locally by running npm start (or yarn start) and access it in your web browser. If you’d like to contribute or make changes to the code, feel free to edit the files as needed. Once you're done, you can commit your changes and push them to your forked repository, or submit a pull request if you'd like to share your improvements.
-
 
 
 ## Credits
