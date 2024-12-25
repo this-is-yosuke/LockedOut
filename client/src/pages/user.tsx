@@ -1,3 +1,4 @@
+// User.tsx
 import { Nav } from '../containers'; // Ensure the correct path for Nav
 import { ProfileCard, RoomCard, SectionTitle } from '../components/';
 import axios from 'axios';
@@ -93,8 +94,9 @@ const User: React.FC = () => {
                     key={room.id} // Unique key for each room
                     title={room.title} // Room title
                     description={room.description} // Room description
-                    buttonText="View Details"
+                    buttonText="View Room" // Button text now says "View Room"
                     buttonColor="bg-red-500"
+                    onClick={() => navigate(`/room/${room.id}`)} // Navigates to the room detail page
                   />
                 ))}
               </div>
@@ -109,8 +111,9 @@ const User: React.FC = () => {
                     key={room.id} // Unique key for each room
                     title={room.title} // Room title
                     description={room.description} // Room description
-                    buttonText="View Details"
+                    buttonText="View Room" // Button text now says "View Room"
                     buttonColor="bg-green-500"
+                    onClick={() => navigate(`/room/${room.id}`)} // Navigates to the room detail page
                   />
                 ))}
               </div>
