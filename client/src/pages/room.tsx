@@ -3,65 +3,100 @@ import { Nav, Footer } from '../containers'; // Your Nav and Footer components
 import Lock from '../assets/lock.png'; // Lock image for display
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom'; // Import useParams for capturing roomID from URL
+import { useUser } from '../contexts'; // Import the useUser hook
 
-// Countdown Timer Component
-const CountdownTimer: React.FC<{ onTimeUp: () => void }> = ({ onTimeUp }) => {
-  const targetTime = new Date().getTime() + 30 * 60 * 1000; // 30 minutes countdown
-  const [timeLeft, setTimeLeft] = useState(targetTime - new Date().getTime());
-//   
+interface TimeUpModalProps {
+  onClose: () => void;
+}
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const remainingTime = targetTime - new Date().getTime();
-      setTimeLeft(remainingTime);
-      if (remainingTime <= 0) {
-        clearInterval(interval);
-        onTimeUp(); // Trigger the callback when time is up
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [onTimeUp]);
-
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60000);
-    const seconds = Math.floor((time % 60000) / 1000);
-    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
-  };
-
-  return (
-    <div className="text-2xl font-semibold text-stone-100 mb-6">
-      Time Remaining: {formatTime(timeLeft)}
-    </div>
-  );
-};
-
-// Modal Component for Time Up
-const TimeUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => (
-  <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50">
-    <div className="bg-white p-8 rounded-lg text-center">
-      <h2 className="text-2xl font-semibold mb-4">Time's Up!</h2>
-      <p className="text-lg mb-6">You've run out of time, you will be redirected to the home page.</p>
+const TimeUpModal: React.FC<TimeUpModalProps> = ({ onClose }) => (
+  <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
+    <div className="bg-white p-8 rounded-md">
+      <h2 className="text-xl font-semibold">Time's Up!</h2>
+      <p className="mt-4">Sorry, the time for this room has expired. Please try again.</p>
       <button
         onClick={onClose}
-        className="py-2 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
       >
-        Go to Home
+        Close
       </button>
     </div>
   </div>
 );
 
-// Escape Room Page
+interface CountdownTimerProps {
+  onTimeUp: () => void;
+}
+
+const CountdownTimer: React.FC<CountdownTimerProps> = ({ onTimeUp }) => {
+  const [timeLeft, setTimeLeft] = useState<number>(60); // Start with 60 seconds
+
+  useEffect(() => {
+    if (timeLeft === 0) {
+      onTimeUp(); // Trigger the onTimeUp callback when the timer reaches 0
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => prevTime - 1);
+    }, 1000);
+
+    return () => clearInterval(timer); // Clear interval when component is unmounted
+  }, [timeLeft, onTimeUp]);
+
+  return (
+    <div className="text-center">
+      <p className="text-xl text-white">Time Left: {timeLeft}s</p>
+    </div>
+  );
+};
+
+
+
 const EscapeRoom: React.FC = () => {
-  const { roomId } = useParams(); // Capture roomId from URL using useParams
+  const { user } = useUser(); // Access user data from context
+  const { roomId }: { roomId?: string } = useParams();
   const [answers, setAnswers] = useState<{ [key: string]: string }>({});
   const [riddles, setRiddles] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [userData, setUserData] = useState<any>(null); // State to store user data from API
   const [isTimeUp, setIsTimeUp] = useState<boolean>(false); // Track if time is up
   const navigate = useNavigate(); // For redirection
 
-  // Fetch riddles based on roomId
+  // Fetch user data from the backend using the username
+  useEffect(() => {
+    if (user?.token && user?.username) {
+      console.log('Fetching data for user:', user.username, 'token is', user.token);
+  
+      axios
+        .get('/api/users/getByUsername', {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+          params: {
+            username: user.username, // Pass the username as a query parameter
+          },
+        })
+        .then((response) => {
+          console.log('User data fetched successfully:', response.data);
+          setUserData(response.data);
+        })
+        .catch((err) => {
+          console.error('Error fetching user data:', err); // No need to cast the error
+        });
+    } else {
+      console.log('No token or username available, skipping user data fetch');
+    }
+  }, [user?.token, user?.username]);
+
+  // Fetch riddles when roomId is available
+  useEffect(() => {
+    if (roomId) {
+      fetchRiddles(roomId);
+    }
+  }, [roomId]);
+
   const fetchRiddles = async (roomID: string) => {
     try {
       const response = await axios.get(`/api/riddles/room/${roomID}`);
@@ -77,12 +112,6 @@ const EscapeRoom: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (roomId) {
-      fetchRiddles(roomId); // Fetch riddles when roomId changes
-    }
-  }, [roomId]); // Re-fetch riddles if roomId changes
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setAnswers((prevAnswers) => ({
@@ -91,36 +120,54 @@ const EscapeRoom: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const isCorrect = riddles.every((riddle, index) => {
       const answer = answers[`riddle${index + 1}`]?.toLowerCase();
       return answer === riddle.answer.toLowerCase();
     });
+  
+    // Access userId from userData correctly, or fallback to username
+    const userId = userData?.userId || user?.username; // Correctly access the userId field
+  
+    const roomIdString = roomId || ''; // Ensure roomId is a string, defaulting to an empty string if it's undefined.
 
-    if (isCorrect) {
-      alert('You unlocked the lock!');
-      setTimeout(() => {
-        navigate('/'); // Redirect to home page after success
-      }, 1000); // Optional delay before redirect
-    } else {
-      alert('Wrong answers. Try again!');
+    const attemptData = {
+      userId: userId,
+      roomId: parseInt(roomIdString, 10), // Convert to an integer after ensuring it's a string
+      attemptNumber: 1,
+      isSuccessful: isCorrect,
+      duration: 30, // Placeholder for duration
+    };
+    
+    console.log('Attempt data:', attemptData);
+  
+    try {
+      const response = await axios.post('http://localhost:3001/api/attempt', attemptData);
+      console.log('Attempt data submitted:', response.data);
+      
+      if (isCorrect) {
+        alert('You unlocked the lock!');
+        setTimeout(() => {
+          navigate('/'); // Redirect to home page after success
+        }, 1000); // Optional delay before redirect
+      } else {
+        alert('Wrong answers. Try again!');
+      }
+    } catch (err) {
+      console.error('Error submitting attempt data:', err); // No need to cast the error
+      alert('Error submitting attempt data');
     }
   };
 
   const handleTimeUp = () => {
-    setIsTimeUp(true); // Time is up, show modal
-    setTimeout(() => {
-      navigate('/'); // Redirect to home page after some delay
-    }, 2000); // Wait 2 seconds before redirect
+    setIsTimeUp(true);
+    alert('Time is up!'); // Optional: Show a message when time is up
   };
 
+  // Conditional rendering while loading
   if (loading) {
     return <div>Loading riddles...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
   }
 
   return (

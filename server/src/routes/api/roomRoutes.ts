@@ -25,10 +25,11 @@ router.get('/', async (_req: Request, res: Response) => {
 // GET room by ID
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const room = await Room.findByPk(req.params.id, {
+        const roomId = parseInt(req.params.id, 10); // Convert the ID to integer
+        const room = await Room.findByPk(roomId, {
             include: [
-                { model: User, as: 'roomsCreated/Creator' },
-                { model: User},
+                { model: User, as: 'Creator' }, // Correct alias for the user who created the room
+                { model: User }, // This assumes there is a many-to-many association for users
                 { model: Riddle, as: 'riddles' }
             ],
         });

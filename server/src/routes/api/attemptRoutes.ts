@@ -36,13 +36,14 @@ router.get('/user/:id', async (req: Request, res: Response) => {
 
 // POST an attempt
 router.post('/', async (req: Request, res: Response) => {
-    const { duration, attemptNumber, isSuccessful, roomID, userID } = req.body;
-    try{
-        const newAttempt = await Attempt.create({duration, attemptNumber, isSuccessful, roomID, userID});
-        res.status(201).json(newAttempt);     
-    }catch(error: any){
-        res.status(400).json({message: error.message});
+    const { duration, attemptNumber, isSuccessful, roomId, userId } = req.body;
+    try {
+        const newAttempt = await Attempt.create({ duration, attemptNumber, isSuccessful, roomId, userId });
+        res.status(201).json(newAttempt);
+    } catch (error: any) {
+        res.status(400).json({ message: error.message });
     }
 });
+
 
 export { router as attemptRouter }

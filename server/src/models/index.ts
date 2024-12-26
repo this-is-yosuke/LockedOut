@@ -4,7 +4,6 @@ import { RoomFactory } from './room.js';
 import { UserFactory } from './user.js';
 import { AttemptFactory } from './attempt.js';
 
-// const Attempt = AttemptFactory(sequelize);
 const Riddle = RiddleFactory(sequelize);
 const Room = RoomFactory(sequelize);
 const User = UserFactory(sequelize);
@@ -14,70 +13,52 @@ const Attempt = AttemptFactory(sequelize);
 
 /* As a user, you can complete as many rooms as you want; a room can be completed by many users.
    HOWEVER, we want a user to complete many rooms AND a room to be completed by many users [many-many],
-   SUCH THAT when I query USERS, comepleted room IDs show up. When I query ROOMS, I can see all
-   USERS who completed it. How about this:
- - Query USERS shows rooms they completed
- - Query ROOMS shows the users who completed it
-   -> many-to-many
- - Query USERS shows the rooms they created
- - Query ROOMS shows its creator
-   -> one-to-many
- */
+   SUCH THAT when I query USERS, completed room IDs show up. When I query ROOMS, I can see all
+   USERS who completed it. */
 
-User.hasMany(Room, {
-    onDelete: 'CASCADE',
-    as: 'roomsCreated/Creator',
-    //foreignKey: 'id',
-    foreignKey: 'userId',
+User.hasMany(Room, { 
+    foreignKey: 'userId', // Rooms created by a user
+    as: 'roomsCreated' 
 });
 
+Room.belongsTo(User, { 
+    foreignKey: 'userId', // Room creator
+    as: 'Creator' 
+});
 
-Room.belongsTo(User, {as: 'roomsCreated/Creator', foreignKey: 'userId'});
-
-// The many Users - to - many Rooms association
+// Many-to-many relationship between User and Room via Attempt
 User.belongsToMany(Room, {
-    through: 'Attempt',
+    through: 'Attempt', // This creates the junction table
+    foreignKey: 'userId'
 });
 
 Room.belongsToMany(User, {
     through: 'Attempt',
-});
-
-// In User model
-User.hasMany(Room, {
-    foreignKey: 'creatorID', // Make sure the foreign key in Room is 'creatorID'
-    as: 'roomsCreated', // Alias for the rooms created by this user
-});
-
-// In Room model
-Room.belongsTo(User, {
-    foreignKey: 'creatorID',
-    as: 'Creator', // Alias for the creator (user who created the room)
+    foreignKey: 'roomId'
 });
 
 // A single room has many riddles
 Room.hasMany(Riddle, {
-    onDelete: 'CASCADE',
-    as: 'riddles',
+    onDelete: 'CASCADE', 
+    as: 'riddles' 
 });
 
-// A riddle is in one room
 Riddle.belongsTo(Room);
 
-// 1-TO-1 Between User and Attempt
-User.hasOne(Attempt, {
+// User and Attempt Associations (One user can have many attempts)
+User.hasMany(Attempt, {
     onDelete: 'CASCADE',
-    foreignKey: 'userId',
+    foreignKey: 'userId'
 });
 
-Attempt.belongsTo(User, {foreignKey: 'userId'});
+Attempt.belongsTo(User, { foreignKey: 'userId' });
 
-// 1-TO-MANY Between Attempt and Room
-Room.hasOne(Attempt, {
+// Room and Attempt Associations (One room can have many attempts)
+Room.hasMany(Attempt, {
     onDelete: 'CASCADE',
-    foreignKey: 'id'
+    foreignKey: 'roomId'
 });
 
-Attempt.belongsTo(Room, {foreignKey: 'id'});
+Attempt.belongsTo(Room, { foreignKey: 'roomId' });
 
 export { Riddle, Room, User, Attempt, sequelize }; 
