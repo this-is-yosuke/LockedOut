@@ -9,8 +9,8 @@ export class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttrib
     declare duration: number;
     declare attemptNumber: number;
     declare isSuccessful: boolean;
-    declare roomId: ForeignKey<Room['id']>
-    declare userId: ForeignKey<User['userId']>
+    declare roomId: ForeignKey<Room['id']>;
+    declare userId: ForeignKey<User['userId']>;
 }
 
 export function AttemptFactory(sequelize: Sequelize){
@@ -34,6 +34,14 @@ export function AttemptFactory(sequelize: Sequelize){
                 type: DataTypes.BOOLEAN,
                 allowNull: false
             },
+            roomId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            userId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            }
         },
         {
             tableName: 'attempt',

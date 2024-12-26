@@ -7,13 +7,15 @@ import routes from './routes/index.js';
 import { roomRouter } from './routes/api/roomRoutes.js'; // Import the room routes
 import { userRouter } from './routes/api/userRoutes.js';
 import { riddleRouter } from './routes/api/riddleRoutes.js'; // Import the riddle routes
-import  Router from './routes/auth.routes.js';
+import { attemptRouter } from './routes/api/attemptRoutes.js';
+import Router from './routes/auth.routes.js';
 import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const forceDatabaseRefresh = false;
+// Conditionally set `force` based on NODE_ENV (e.g., development vs production)
+const forceDatabaseRefresh = process.env.NODE_ENV === 'development';  // true in development, false in production
 
 // Configure CORS
 const corsOptions = {
@@ -37,12 +39,17 @@ app.use('/api/riddles', riddleRouter); // Add riddle routes
 app.use('/api', routes); // Add other routes (this is for your general API routes)
 app.use('/auth', Router);
 app.use('/api/users', userRouter);  // Ensure this line is present!
-
-
+app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
 // Sync database and start the server
-sequelize.sync({ force: forceDatabaseRefresh }).then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+sequelize.sync({ force: forceDatabaseRefresh })  // Only force refresh in development
+  .then(() => {
+    console.log(`Database ${forceDatabaseRefresh ? 'refreshed' : 'synchronized'}`);
+    // Now you can start the Express server
+    app.listen(PORT, () => {
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Error syncing database:', error);
   });
-});
