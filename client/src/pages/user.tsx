@@ -1,4 +1,3 @@
-// User.tsx
 import { Nav } from '../containers'; // Ensure the correct path for Nav
 import { ProfileCard, RoomCard, SectionTitle } from '../components/';
 import axios from 'axios';
@@ -31,7 +30,7 @@ const User: React.FC = () => {
         })
         .then((response) => {
           console.log('User data fetched successfully:', response.data);
-          setUserData(response.data);
+          setUserData(response.data); // Set user data to state
         })
         .catch((err) => {
           console.error('Error fetching user data:', err.response?.data || err.message || err);
@@ -52,11 +51,15 @@ const User: React.FC = () => {
     return <div className="text-gray-500">Loading user data...</div>;
   }
 
-  // Map "roomsCreated/Creator" to "roomsCreated" for easier usage
-  const { username, email, rooms = [], roomsCreated: roomsCreatedRaw = [] } = userData;
-  const roomsCreated = userData['roomsCreated/Creator'] || roomsCreatedRaw; // Ensure compatibility
+  // Destructure user data
+  const { username, email, roomsCompleted = [], roomsCreated = [] } = userData;
+
+  // Check if roomsCompleted and roomsCreated are properly populated
+  console.log('Rooms Completed:', roomsCompleted); // Debug the roomsCompleted array
+  console.log('Rooms Created:', roomsCreated); // Debug the roomsCreated array
+
   const roomsCreatedCount = roomsCreated.length; // Count the rooms created by the user
-  const roomsCompletedCount = rooms.length; // Count the rooms completed by the user
+  const roomsCompletedCount = roomsCompleted.length; // Count the rooms completed by the user
 
   return (
     <>
@@ -89,16 +92,20 @@ const User: React.FC = () => {
             <div className="mb-6">
               <SectionTitle title="Rooms You Created" />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {roomsCreated.map((room: any) => (
-                  <RoomCard
-                    key={room.id} // Unique key for each room
-                    title={room.title} // Room title
-                    description={room.description} // Room description
-                    buttonText="View Room" // Button text now says "View Room"
-                    buttonColor="bg-red-500"
-                    onClick={() => navigate(`/room/${room.id}`)} // Navigates to the room detail page
-                  />
-                ))}
+                {roomsCreated.length > 0 ? (
+                  roomsCreated.map((room: any) => (
+                    <RoomCard
+                      key={room.id} // Unique key for each room
+                      title={room.title} // Room title
+                      description={room.description} // Room description
+                      buttonText="View Room" // Button text now says "View Room"
+                      buttonColor="bg-red-500"
+                      onClick={() => navigate(`/room/${room.id}`)} // Navigates to the room detail page
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-500">You haven't created any rooms yet.</p>
+                )}
               </div>
             </div>
 
@@ -106,16 +113,20 @@ const User: React.FC = () => {
             <div>
               <SectionTitle title="Rooms You've Completed" />
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {rooms.map((room: any) => (
-                  <RoomCard
-                    key={room.id} // Unique key for each room
-                    title={room.title} // Room title
-                    description={room.description} // Room description
-                    buttonText="View Room" // Button text now says "View Room"
-                    buttonColor="bg-green-500"
-                    onClick={() => navigate(`/room/${room.id}`)} // Navigates to the room detail page
-                  />
-                ))}
+                {roomsCompleted.length > 0 ? (
+                  roomsCompleted.map((room: any) => (
+                    <RoomCard
+                      key={room.id} // Unique key for each room
+                      title={room.title} // Room title
+                      description={room.description} // Room description
+                      buttonText="View Room" // Button text now says "View Room"
+                      buttonColor="bg-green-500"
+                      onClick={() => navigate(`/room/${room.id}`)} // Navigates to the room detail page
+                    />
+                  ))
+                ) : (
+                  <p className="text-gray-500">You haven't completed any rooms yet.</p>
+                )}
               </div>
             </div>
           </main>

@@ -13,40 +13,59 @@ export class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttrib
     declare userId: ForeignKey<User['userId']>;
 }
 
-export function AttemptFactory(sequelize: Sequelize){
+export function AttemptFactory(sequelize: Sequelize) {
     Attempt.init(
-        {
-            id: {
-                type: DataTypes.INTEGER,
-                autoIncrement: true,
-                primaryKey: true,
-                allowNull: false
-            },
-            duration: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            attemptNumber: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            isSuccessful: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false
-            },
-            roomId: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            userId: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            }
+      {
+        id: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+          allowNull: false,
         },
-        {
-            tableName: 'attempt',
-            sequelize
-        }
+        duration: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        attemptNumber: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        isSuccessful: {
+          type: DataTypes.BOOLEAN,
+          allowNull: false,
+        },
+        roomId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'rooms',
+            key: 'id',
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+        },
+        userId: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: 'users',
+            key: 'userId',
+          },
+          onUpdate: 'CASCADE',
+          onDelete: 'CASCADE',
+        },
+      },
+      {
+        tableName: 'attempt',
+        sequelize,
+        indexes: [
+          // Ensure there's no unique index on roomId and userId
+          {
+            unique: false,  // Make sure that it's not unique
+            fields: ['roomId', 'userId'],  // Indicate the combination of roomId and userId
+          },
+        ],
+      }
     );
     return Attempt;
-};
+}
