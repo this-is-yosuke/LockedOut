@@ -53,3 +53,21 @@ sequelize.sync({ force: forceDatabaseRefresh })  // Only force refresh in develo
   .catch((error) => {
     console.error('Error syncing database:', error);
   });
+
+// Example route with `req` used properly
+app.get('/api/some-path', (req, res) => {
+  // Now using `req` to access query parameters
+  console.log(req.query.someParam);  // Example: log the query parameter
+  res.send('Some Response');
+});
+
+// Example route where `req` is not needed, so we remove it
+app.get('/api/rooms', (_, res) => {
+  res.json({ message: 'List of rooms' });
+});
+
+// Another example with `req` used
+app.post('/api/rooms', (req, res) => {
+  const roomData = req.body;  // Using req.body to access posted data
+  res.json({ message: 'Room created', roomData });
+});
