@@ -189,7 +189,7 @@ const EscapeRoom: React.FC = () => {
       }
     }
   };
-  
+
   const handleTimeUp = () => {
     setIsTimeUp(true);
     alert('Time is up!'); // Optional: Show a message when time is up
@@ -198,6 +198,10 @@ const EscapeRoom: React.FC = () => {
   // Conditional rendering while loading
   if (loading) {
     return <div>Loading riddles...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
   }
 
   return (
