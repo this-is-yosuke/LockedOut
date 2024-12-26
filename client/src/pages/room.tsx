@@ -122,27 +122,51 @@ const EscapeRoom: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Ensure the answers are correct before submission
     const isCorrect = riddles.every((riddle, index) => {
       const answer = answers[`riddle${index + 1}`]?.toLowerCase();
       return answer === riddle.answer.toLowerCase();
     });
   
-    // Access userId from userData correctly, or fallback to username
-    const userId = userData?.userId || user?.username; // Correctly access the userId field
+    // Ensure roomId is a valid integer and userId is correct
+    const roomIdString = roomId || '';
+    const roomIdInt = parseInt(roomIdString, 10); // Convert roomId to integer
   
-    const roomIdString = roomId || ''; // Ensure roomId is a string, defaulting to an empty string if it's undefined.
-
+    // Ensure userId is set properly (userData or user.username)
+    const userId = userData?.userId || user?.username;
+  
+    // Debugging: log the values you're sending
+    console.log("Submitting attempt data...");
+    console.log("roomId:", roomIdInt);
+    console.log("userId:", userId);
+    console.log("isCorrect:", isCorrect);
+    
+    // Check for valid roomId
+    if (isNaN(roomIdInt)) {
+      alert("Invalid Room ID");
+      return;
+    }
+  
+    // Ensure userId is set and valid
+    if (!userId) {
+      alert("User ID is missing or invalid.");
+      return;
+    }
+  
     const attemptData = {
-      userId: userId,
-      roomId: parseInt(roomIdString, 10), // Convert to an integer after ensuring it's a string
+      userId: userId, // Ensure userId is passed correctly
+      roomId: roomIdInt, // Ensure roomId is passed as integer
       attemptNumber: 1,
       isSuccessful: isCorrect,
       duration: 30, // Placeholder for duration
     };
-    
-    console.log('Attempt data:', attemptData);
+  
+    // Debugging: log the full data object before submitting
+    console.log("Attempt Data: ", attemptData);
   
     try {
+      // Send attempt data to backend
       const response = await axios.post('http://localhost:3001/api/attempt', attemptData);
       console.log('Attempt data submitted:', response.data);
       
@@ -155,11 +179,17 @@ const EscapeRoom: React.FC = () => {
         alert('Wrong answers. Try again!');
       }
     } catch (err) {
-      console.error('Error submitting attempt data:', err); // No need to cast the error
-      alert('Error submitting attempt data');
+      // Handle validation error from the server
+      if (axios.isAxiosError(err)) {
+        console.error('Validation error from server:', err.response?.data || err.message);
+        alert(`Error: ${err.response?.data?.message || err.message}`);
+      } else {
+        console.error('Unknown error:', err);
+        alert('Unknown error occurred');
+      }
     }
   };
-
+  
   const handleTimeUp = () => {
     setIsTimeUp(true);
     alert('Time is up!'); // Optional: Show a message when time is up
@@ -217,7 +247,6 @@ const EscapeRoom: React.FC = () => {
 
               <div className="text-center mt-6">
                 <button
-                  type="submit"
                   onClick={handleSubmit}
                   className="py-2 px-6 bg-blue-500 text-white text-lg rounded-md hover:bg-red-600"
                 >

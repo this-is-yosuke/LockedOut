@@ -5,53 +5,44 @@ import { User, Room } from '../../models/index.js';
 const router = express.Router();
 
 // Get all users
-router.get('/', async (_req: Request, res: Response) => {
-    try {
-        const users = await User.findAll({
-            include: [{model: Room, as: 'rooms'}, {model: Room, as: 'roomsCreated'}],
-            // room model goes in the brackets
-            attributes: { exclude: ['password'] }
-        });
-        res.json(users);
-    } catch (error: any) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-// Get a user by username (add this route)
 router.get('/getByUsername', async (req: Request, res: Response) => {
-    const username = req.query.username as string | undefined;
-    if (!username) {
-        console.log('Username is missing or invalid');
-        return res.status(400).json({ message: 'Username is required' });
+    const username = req.query.username;
+
+    // Check if username is provided and ensure it's a string (handle case if it's an array)
+    if (typeof username !== 'string') {
+        return res.status(400).json({ message: 'Username must be a valid string' });
     }
 
     try {
+        // Fetch the user along with the rooms they created and completed
         const user = await User.findOne({
             where: { username },
             include: [
                 {
                     model: Room,
-                    as: 'rooms'
+                    as: 'roomsCreated',  // Rooms created by the user
+                    attributes: ['id', 'title', 'description'],
                 },
                 {
                     model: Room,
-                    as: 'roomsCreated'
+                    as: 'roomsCompleted',  // Rooms completed by the user via Attempt
+                    attributes: ['id', 'title', 'description'],
+                    through: { attributes: [] }, // Exclude attributes from the join table (Attempt)
                 }
             ],
-            attributes: { exclude: ['password'] }
+            attributes: { exclude: ['password'] },  // Exclude password from the response
         });
 
-        if (user) {
-            console.log('User data found:', user);
-            return res.json(user);
-        } else {
-            console.log('User not found for username:', username);
+        // If no user is found, return a 404 response
+        if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+
+        // Return the found user data
+        return res.json(user);
     } catch (error: any) {
-        console.log('Error fetching user:', error);
-        return res.status(500).json({ message: error.message });
+        console.error('Error fetching user:', error);
+        return res.status(500).json({ message: 'Internal server error', error: error.message });
     }
 });
 
