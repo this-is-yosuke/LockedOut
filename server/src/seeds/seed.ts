@@ -5,12 +5,12 @@ import riddleSeedData from './riddleSeedData.json' with {type: 'json'};
 import attemptSeedData from './attemptSeedData.json' with {type: 'json'};
 
 export const seedDatabase = async () => {
-    const users = await User.bulkCreate(userSeedData, {
+    await User.bulkCreate(userSeedData, {
         individualHooks: true,
         validate: true,
     });
     
-    const rooms = await Room.bulkCreate(roomSeedData, {
+    await Room.bulkCreate(roomSeedData, {
         individualHooks: true,
         returning: true,
         validate: true,
@@ -24,7 +24,7 @@ export const seedDatabase = async () => {
         validate: true,
     });
     
-    const attempts = await Attempt.bulkCreate(attemptSeedData, {
+    await Attempt.bulkCreate(attemptSeedData, {
         individualHooks: true,
         returning: true,
         validate: false,
