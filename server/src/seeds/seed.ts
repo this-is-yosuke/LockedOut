@@ -50,8 +50,4 @@ export const seedDatabase = async () => {
     for(const room of rooms) {
         await room.addAttempt(attempts[room.id]);
     }
-    }
-
-    console.log("\n Users have rooms now? \n");
-
 }
