@@ -2,6 +2,7 @@ import { Model,
     type InferAttributes, type InferCreationAttributes, type CreationOptional, Sequelize,
     DataTypes, ForeignKey, type BelongsToManyAddAssociationMixin} from 'sequelize';
 import type { User } from './user';
+import { Attempt } from './attempt';
 
 export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<Room>> {
     declare id: CreationOptional<number>;
@@ -14,6 +15,7 @@ export class Room extends Model<InferAttributes<Room>, InferCreationAttributes<R
     // Declaring the many-to-many
     declare addUsers: BelongsToManyAddAssociationMixin<User[], User['userId'][]>;
     declare addUser: BelongsToManyAddAssociationMixin<User, User['userId']>;
+        declare addAttempt: BelongsToManyAddAssociationMixin<Attempt, Attempt['id']>;
 }
 
 export function RoomFactory(sequelize: Sequelize) {
