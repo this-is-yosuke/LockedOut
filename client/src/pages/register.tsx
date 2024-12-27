@@ -5,7 +5,6 @@ import { register } from '../api/authAPI';
 import { UserRegister } from '../interfaces/UserRegister';
 import { useNavigate } from 'react-router-dom';
 
-const navigate = useNavigate();
 
 const Register: React.FC = () => {
   const [registerData, setRegisterData] = useState<UserRegister>({
@@ -14,7 +13,7 @@ const Register: React.FC = () => {
     email: '',
     confirmPassword: '',
   });
-
+  
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -24,21 +23,22 @@ const Register: React.FC = () => {
       [name]: value,
     });
   };
-
+  
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log("Submission sent"); // Debugging
     try {
       const data = await register(registerData);
       if (data.token) {
-          navigate('/login'); // Use navigate to programmatically redirect // Redirect to login page
+        const navigate = useNavigate();
+        navigate('/login'); // Use navigate to programmatically redirect // Redirect to login page
         
       }
     } catch (err) {
       console.error('Failed to Register', err);
     }
   };
-
+  
   return (
     <>
       <Nav />
@@ -50,7 +50,7 @@ const Register: React.FC = () => {
               src={Lock}
               alt="Logo"
               className="w-24 h-24"
-            />
+              />
           </div>
 
           {/* Register Form Section */}
@@ -64,12 +64,12 @@ const Register: React.FC = () => {
                 </label>
                 <input
                 onChange={handleChange}
-                  type="text"
-                  id="display-name"
-                  name="username" //changed from display-name to username
-                  className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter your display name"
-                  required
+                type="text"
+                id="display-name"
+                name="username" //changed from display-name to username
+                className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your display name"
+                required
                 />
               </div>
 
