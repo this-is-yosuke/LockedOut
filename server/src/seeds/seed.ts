@@ -32,7 +32,8 @@ export const seedDatabase = async () => {
 
     console.log("\n Riddles are seeded \n");
     
-    for(const user of users) {
+    // for(const user of users) {
+
         // const randomRooms = rooms.slice(Math.floor(Math.random() * rooms.length));
         // await user.addRooms(randomRooms);
         // console.log("\n Hello??? Can anyone hear me??? \n");
@@ -41,13 +42,16 @@ export const seedDatabase = async () => {
         // console.log(`\n We are inside of the "user of users." Let's see what the user and room is, shall we?
         //     userName: ${user.username} & rooms[i].title: ${rooms[i].title} \n`);
         // i++;
-        await user.addRoom(rooms[user.userId]);
+
+        // await user.addRoom(rooms[user.userId]);
+
         // for(let i = 0; i < randomRooms.length; i++){
         //     let newAttempt = attempts[i].id;
         //     await user.addAttempt(newAttempt);
-        await user.addAttempt(attempts[user.userId]);
-        }
-    for(const room of rooms) {
-        await room.addAttempt(attempts[room.id]);
-    }
+
+    //     await user.addAttempt(attempts[user.userId]);
+    //     }
+    // for(const room of rooms) {
+    //     await room.addAttempt(attempts[room.id]);
+    // }
 }
