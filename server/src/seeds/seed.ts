@@ -36,7 +36,7 @@ export const seedDatabase = async () => {
         const randomRooms = rooms.slice(Math.floor(Math.random() * rooms.length));
         await user.addRooms(randomRooms);
         // console.log("\n Hello??? Can anyone hear me??? \n");
-        let i = 0;
+        // let i = 0;
         // await user.addRoom(rooms["1"]);
         // console.log(`\n We are inside of the "user of users." Let's see what the user and room is, shall we?
         //     userName: ${user.username} & rooms[i].title: ${rooms[i].title} \n`);
