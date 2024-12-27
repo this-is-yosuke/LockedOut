@@ -1,4 +1,4 @@
-import Auth from '../utils/auth';
+import Auth from '../../../client/src/utils/auth';
 
 const retrieveUsers = async () => {
     try {
