@@ -3,6 +3,7 @@ import {
     BelongsToManyAddAssociationMixin } from 'sequelize';
 import bcrypt from 'bcrypt';
 import { Room } from './room';
+import { Attempt } from './attempt';
 
 // interface UserAttributes {
 //     id: number;
@@ -26,6 +27,7 @@ export class User
     // Declaring the many-to-many
     declare addRoom: BelongsToManyAddAssociationMixin<Room, Room['id']>;
     declare addRooms: BelongsToManyAddAssociationMixin<Room[], Room['id'][]>;
+    declare addAttempt: BelongsToManyAddAssociationMixin<Attempt, Attempt['id']>;
 
     // Hash the password before saving the user
     async setPassword(password: string): Promise<void> {
