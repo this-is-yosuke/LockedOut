@@ -3,6 +3,9 @@ import Lock from '../assets/lock.png';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { register } from '../api/authAPI';
 import { UserRegister } from '../interfaces/UserRegister';
+import { useNavigate } from 'react-router-dom';
+
+const navigate = useNavigate();
 
 const Register: React.FC = () => {
   const [registerData, setRegisterData] = useState<UserRegister>({
@@ -28,7 +31,8 @@ const Register: React.FC = () => {
     try {
       const data = await register(registerData);
       if (data.token) {
-        window.location.href = '/login'; // Redirect to login page
+          navigate('/login'); // Use navigate to programmatically redirect // Redirect to login page
+        
       }
     } catch (err) {
       console.error('Failed to Register', err);

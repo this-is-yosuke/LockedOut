@@ -29,7 +29,7 @@ interface CountdownTimerProps {
 }
 
 const CountdownTimer: React.FC<CountdownTimerProps> = ({ onTimeUp }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(60); // Start with 60 seconds
+  const [timeLeft, setTimeLeft] = useState<number>(1800); // Start with 60 seconds
 
   useEffect(() => {
     if (timeLeft === 0) {
