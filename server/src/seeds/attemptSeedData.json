@@ -3,6 +3,5 @@
     {"duration": 10, "attemptNumber": 1, "isSuccessful": true, "roomId": 2, "userId": 2},
     {"duration": 15, "attemptNumber": 1, "isSuccessful": true, "roomId": 3, "userId": 3},
     {"duration": 20, "attemptNumber": 1, "isSuccessful": true, "roomId": 4, "userId": 4},
-    {"duration": 25, "attemptNumber": 1, "isSuccessful": true, "roomId": 5, "userId": 5},
-    {"duration": 27, "attemptNumber": 1, "isSuccessful": true, "roomId": 6, "userId": 6}
+    {"duration": 25, "attemptNumber": 1, "isSuccessful": true, "roomId": 5, "userId": 5}
 ]
