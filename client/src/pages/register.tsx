@@ -5,40 +5,37 @@ import { register } from '../api/authAPI';
 import { UserRegister } from '../interfaces/UserRegister';
 import { useNavigate } from 'react-router-dom';
 
-
 const Register: React.FC = () => {
+  const navigate = useNavigate(); // Call `useNavigate` here at the top level of the component
+
   const [registerData, setRegisterData] = useState<UserRegister>({
     username: '',
     password: '',
     email: '',
     confirmPassword: '',
   });
-  
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setRegisterData({
       ...registerData,
       [name]: value,
     });
   };
-  
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     console.log("Submission sent"); // Debugging
     try {
       const data = await register(registerData);
       if (data.token) {
-        const navigate = useNavigate();
-        navigate('/login'); // Use navigate to programmatically redirect // Redirect to login page
-        
+        navigate('/login'); // Now calling `navigate` correctly at the top level
       }
     } catch (err) {
       console.error('Failed to Register', err);
     }
   };
-  
+
   return (
     <>
       <Nav />
@@ -50,26 +47,26 @@ const Register: React.FC = () => {
               src={Lock}
               alt="Logo"
               className="w-24 h-24"
-              />
+            />
           </div>
 
           {/* Register Form Section */}
           <div className="w-2/3 p-8 bg-stone-800">
             <h2 className="text-3xl font-semibold mb-6 text-stone-100">Create an Account</h2>
-            <form onSubmit={handleSubmit}> 
+            <form onSubmit={handleSubmit}>
               {/* Display Name Field */}
               <div className="mb-4">
                 <label htmlFor="display-name" className="block text-lg mb-2 text-stone-200">
                   Display Name
                 </label>
                 <input
-                onChange={handleChange}
-                type="text"
-                id="display-name"
-                name="username" //changed from display-name to username
-                className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your display name"
-                required
+                  onChange={handleChange}
+                  type="text"
+                  id="display-name"
+                  name="username" // changed from display-name to username
+                  className="w-full p-3 bg-stone-200 text-stone-900 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter your display name"
+                  required
                 />
               </div>
 
@@ -79,7 +76,7 @@ const Register: React.FC = () => {
                   Email Address
                 </label>
                 <input
-                onChange={handleChange}
+                  onChange={handleChange}
                   type="email"
                   id="email"
                   name="email"
@@ -95,7 +92,7 @@ const Register: React.FC = () => {
                   Password
                 </label>
                 <input
-                onChange={handleChange}
+                  onChange={handleChange}
                   type="password"
                   id="password"
                   name="password"
@@ -111,7 +108,7 @@ const Register: React.FC = () => {
                   Confirm Password
                 </label>
                 <input
-                onChange={handleChange}
+                  onChange={handleChange}
                   type="password"
                   id="confirm-password"
                   name="confirmPassword"
@@ -124,7 +121,6 @@ const Register: React.FC = () => {
               {/* Terms & Conditions */}
               <div className="flex items-center mb-6">
                 <input
-                // onChange={handleChange}
                   type="checkbox"
                   id="terms"
                   name="terms"
@@ -147,7 +143,7 @@ const Register: React.FC = () => {
           </div>
         </div>
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 };
