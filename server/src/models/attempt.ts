@@ -1,6 +1,4 @@
-import {Model, 
-    type InferAttributes, type InferCreationAttributes, type Sequelize, type CreationOptional,
-    DataTypes, ForeignKey } from 'sequelize'
+import { Model, type InferAttributes, type InferCreationAttributes, type Sequelize, type CreationOptional, DataTypes, ForeignKey } from 'sequelize';
 import { Room } from './room';
 import { User } from './user';
 
@@ -59,10 +57,10 @@ export function AttemptFactory(sequelize: Sequelize) {
         tableName: 'attempt',
         sequelize,
         indexes: [
-          // Ensure there's no unique index on roomId and userId
+          // This index is NOT unique; it just helps with query optimization
           {
-            unique: false,  // Make sure that it's not unique
-            fields: ['roomId', 'userId'],  // Indicate the combination of roomId and userId
+            unique: false,
+            fields: ['roomId', 'userId'], // Composite index for roomId and userId
           },
         ],
       }
