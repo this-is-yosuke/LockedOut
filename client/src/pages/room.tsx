@@ -29,7 +29,7 @@ interface CountdownTimerProps {
 }
 
 const CountdownTimer: React.FC<CountdownTimerProps> = ({ onTimeUp }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(1800); // Start with 60 seconds
+  const [timeLeft, setTimeLeft] = useState<number>(1800); // Start with 30 minutes (1800 seconds)
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -44,13 +44,18 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ onTimeUp }) => {
     return () => clearInterval(timer); // Clear interval when component is unmounted
   }, [timeLeft, onTimeUp]);
 
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
   return (
     <div className="text-center">
-      <p className="text-xl text-white">Time Left: {timeLeft}s</p>
+      <p className="text-xl text-white">Time Left: {formatTime(timeLeft)}</p>
     </div>
   );
 };
-
 
 
 const EscapeRoom: React.FC = () => {
