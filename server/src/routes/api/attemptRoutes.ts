@@ -1,6 +1,7 @@
 import express from 'express'
 import type { Request, Response } from 'express'
 import { Attempt, User, Room } from '../../models/index.js';
+import sequelize from '../../config/connection.js';
 
 const router = express.Router();
 
@@ -39,38 +40,56 @@ import { ValidationError as SequelizeValidationError } from 'sequelize'; // Impo
 
 router.post('/', async (req: Request, res: Response) => {
     console.log('Incoming request body:', req.body); // Log the incoming request data
-  
-    const { duration, attemptNumber, isSuccessful, roomId, userId } = req.body;
-  
-    const attemptData = {
-      duration,
-      attemptNumber,
-      isSuccessful,
-      roomId,
-      userId,
-    };
-  
-    console.log('Prepared attemptData:', attemptData); // Log the attemptData being used for creation
-  
-    try {
-      console.log('Attempting to create an Attempt record...'); // Log before calling create
-      const attempt = await Attempt.create(attemptData);
-      console.log('Attempt record created successfully:', attempt.toJSON()); // Log success
-      return res.status(201).json({ attempt }); // Send success response
-    } catch (err: unknown) {
-      console.error('Error occurred while creating Attempt:', err); // Log the raw error
-  
-      if (err instanceof SequelizeValidationError) {
-        console.error('Validation error details:', JSON.stringify(err.errors, null, 2)); // Log validation error details
-        return res.status(400).json({ message: 'Validation error', details: err.errors });
-      } else if (err instanceof Error) {
-        console.error('Unexpected error message:', err.message); // Log unexpected error message
-        return res.status(500).json({ message: 'Internal server error' });
-      } else {
-        console.error('Unknown error type:', err); // Log fallback for unknown error type
-        return res.status(500).json({ message: 'Unknown error' });
-      }
-    }
-  });
 
-export { router as attemptRouter }
+    const { duration, attemptNumber, isSuccessful, roomId, userId } = req.body;
+
+    const attemptData = {
+        duration,
+        attemptNumber,
+        isSuccessful,
+        roomId,
+        userId,
+    };
+
+    console.log('Prepared attemptData:', attemptData); // Log the attemptData being used for creation
+
+    try {
+        console.log('Attempting to create an Attempt record...'); // Log before calling create
+        const attempt = await Attempt.create(attemptData);
+        console.log('Attempt record created successfully:', attempt.toJSON()); // Log success
+        return res.status(201).json({ attempt }); // Send success response
+    } catch (err: unknown) {
+        console.error('Error occurred while creating Attempt:', err); // Log the raw error
+
+        if (err instanceof SequelizeValidationError) {
+            console.error('Validation error details:', JSON.stringify(err.errors, null, 2)); // Log validation error details
+            return res.status(400).json({ message: 'Validation error', details: err.errors });
+        } else if (err instanceof Error) {
+            console.error('Unexpected error message:', err.message); // Log unexpected error message
+            return res.status(500).json({ message: 'Internal server error' });
+        } else {
+            console.error('Unknown error type:', err); // Log fallback for unknown error type
+            return res.status(500).json({ message: 'Unknown error' });
+        }
+    }
+});
+
+// Drop Unique Constraint (route to remove the unique constraint on userId and roomId)
+router.post('/drop-constraint', async (_req: Request, res: Response) => {
+    try {
+        // SQL query to drop the unique constraint on userId and roomId
+        const query = `
+          ALTER TABLE "attempt" 
+          DROP CONSTRAINT IF EXISTS "attempt_roomId_userId_unique";  -- Replace with actual constraint name if different
+        `;
+        
+        // Execute raw SQL query to drop the constraint
+        await sequelize.query(query);
+        res.status(200).json({ message: 'Unique constraint dropped successfully' });
+    } catch (error) {
+        console.error('Error dropping constraint:', error);
+        res.status(500).json({ error: 'Failed to drop unique constraint' });
+    }
+});
+
+export { router as attemptRouter };
