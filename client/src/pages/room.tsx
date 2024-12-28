@@ -172,7 +172,7 @@ const EscapeRoom: React.FC = () => {
   
     try {
       // Send attempt data to backend
-      const response = await axios.post('http://localhost:3001/api/attempt', attemptData);
+      const response = await axios.post('/api/attempt', attemptData);
       console.log('Attempt data submitted:', response.data);
       
       if (isCorrect) {
