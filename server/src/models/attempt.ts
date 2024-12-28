@@ -9,7 +9,7 @@ export class Attempt extends Model<InferAttributes<Attempt>, InferCreationAttrib
     declare isSuccessful: boolean;
     declare roomId: ForeignKey<Room['id']>;
     declare userId: ForeignKey<User['userId']>;
-}
+}  
 
 export function AttemptFactory(sequelize: Sequelize) {
     Attempt.init(
@@ -36,7 +36,7 @@ export function AttemptFactory(sequelize: Sequelize) {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
-            model: 'rooms',
+            model: 'room',
             key: 'id',
           },
           onUpdate: 'CASCADE',
@@ -46,7 +46,7 @@ export function AttemptFactory(sequelize: Sequelize) {
           type: DataTypes.INTEGER,
           allowNull: false,
           references: {
-            model: 'users',
+            model: 'user',
             key: 'userId',
           },
           onUpdate: 'CASCADE',
@@ -57,7 +57,6 @@ export function AttemptFactory(sequelize: Sequelize) {
         tableName: 'attempt',
         sequelize,
         indexes: [
-          // This index is NOT unique; it just helps with query optimization
           {
             unique: false,
             fields: ['roomId', 'userId'], // Composite index for roomId and userId
