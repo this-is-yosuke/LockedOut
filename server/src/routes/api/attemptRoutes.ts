@@ -1,7 +1,6 @@
 import express from 'express'
 import type { Request, Response } from 'express'
 import { Attempt, User, Room } from '../../models/index.js';
-import sequelize from '../../config/connection.js';
 
 const router = express.Router();
 
@@ -71,24 +70,6 @@ router.post('/', async (req: Request, res: Response) => {
             console.error('Unknown error type:', err); // Log fallback for unknown error type
             return res.status(500).json({ message: 'Unknown error' });
         }
-    }
-});
-
-// Drop Unique Constraint (route to remove the unique constraint on userId and roomId)
-router.post('/drop-constraint', async (_req: Request, res: Response) => {
-    try {
-        // SQL query to drop the unique constraint on userId and roomId
-        const query = `
-          ALTER TABLE "attempt" 
-          DROP CONSTRAINT IF EXISTS "attempt_roomId_userId_unique";  -- Replace with actual constraint name if different
-        `;
-        
-        // Execute raw SQL query to drop the constraint
-        await sequelize.query(query);
-        res.status(200).json({ message: 'Unique constraint dropped successfully' });
-    } catch (error) {
-        console.error('Error dropping constraint:', error);
-        res.status(500).json({ error: 'Failed to drop unique constraint' });
     }
 });
 
