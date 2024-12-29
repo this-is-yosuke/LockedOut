@@ -6,32 +6,51 @@ const router = express.Router();
 
 // GET attempt by userId and roomId
 router.get('/', async (req: Request, res: Response) => {
+    // Extract query parameters and assert them as strings
     const { userId, roomId } = req.query;
 
-    // Ensure userId and roomId are strings and not arrays or objects
-    const userIdString = Array.isArray(userId) ? userId[0] : userId;
-    const roomIdString = Array.isArray(roomId) ? roomId[0] : roomId;
+    // Safely handle query parameters as strings
+    const userIdString = typeof userId === 'string' ? userId : String(userId);
+    const roomIdString = typeof roomId === 'string' ? roomId : String(roomId);
 
-    // Validate that userId and roomId are present and are strings
+    // Validate that userId and roomId are present
     if (!userIdString || !roomIdString) {
         return res.status(400).json({ error: 'Missing userId or roomId.' });
+    }
+
+    // Convert userId and roomId to numbers if they are valid numeric strings
+    const userIdNumber = parseInt(userIdString, 10);
+    const roomIdNumber = parseInt(roomIdString, 10);
+
+    // Ensure the parsed values are valid numbers
+    if (isNaN(userIdNumber) || isNaN(roomIdNumber)) {
+        return res.status(400).json({ error: 'userId or roomId must be a valid number.' });
     }
 
     try {
         const attempt = await Attempt.findOne({
             where: {
-                userId: userIdString, // Ensure these are strings
-                roomId: roomIdString,  // Ensure these are strings
+                userId: userIdNumber, // Now it's a number
+                roomId: roomIdNumber,  // Now it's a number
             },
         });
 
         if (attempt) {
-            return res.status(200).json(attempt);
+            return res.status(200).json(attempt); // Return the existing attempt
         } else {
-            return res.status(404).json({ error: 'Attempt not found.' });
+            // If no attempt is found, proceed with creating a new attempt
+            const newAttempt = await Attempt.create({
+                userId: userIdNumber,
+                roomId: roomIdNumber,
+                attemptNumber: 1, // New attempt starts with attempt number 1
+                isSuccessful: false, // Default to unsuccessful until user tries
+                duration: 0, // Placeholder value for duration
+            });
+
+            return res.status(201).json(newAttempt); // Return the newly created attempt
         }
     } catch (error) {
-        console.error('Error fetching attempt:', error);
+        console.error('Error fetching or creating attempt:', error);
         return res.status(500).json({ error: 'Internal server error.' });
     }
 });
@@ -58,8 +77,6 @@ router.post('/', async (req: Request, res: Response) => {
         return res.status(201).json(newAttempt);
     } catch (error) {
         console.error('Error creating attempt:', error);
-
-        // Ensure a response is sent on error
         return res.status(500).json({ error: 'Internal server error.' });
     }
 });
@@ -74,10 +91,10 @@ router.put('/:id', async (req: Request, res: Response) => {
         }
 
         await attempt.update(req.body);
-        return res.status(200).json(attempt);  // Ensure this path always returns a response
+        return res.status(200).json(attempt); // Return the updated attempt
     } catch (error) {
         console.error('Error updating attempt:', error);
-        return res.status(500).json({ error: 'Internal server error.' });  // Ensure this path returns a response
+        return res.status(500).json({ error: 'Internal server error.' });
     }
 });
 
