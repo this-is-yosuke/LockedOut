@@ -48,12 +48,13 @@ const NavMenu: React.FC = () => {
                 Welcome, {user.username}!
               </Link>
 
-              <button
+              <Link
+                to={`/`}
                 onClick={logout}
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
               >
                 Logout
-              </button>
+              </Link>
             </>
           )}
         </div>
