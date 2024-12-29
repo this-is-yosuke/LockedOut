@@ -10,14 +10,15 @@ const dbUrl = new URL(process.env.DATABASE_URL!);  // Ensure DATABASE_URL is set
 
 // Create a new Sequelize instance using the parsed URL with SSL enabled
 const sequelize = new Sequelize(dbUrl.href, {
-  dialect: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true,  // Ensure SSL is required
-      rejectUnauthorized: false,  // Set to false for self-signed certificates
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,  // Ensure SSL is required
+        rejectUnauthorized: false,  // Set to false for self-signed certificates
+      },
     },
-  },
-  logging: false, // Disable Sequelize logging
-});
+    logging: console.log, // Enable Sequelize logging to console
+  });
 
 export default sequelize;
+
