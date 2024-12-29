@@ -38,7 +38,7 @@ Welcome to Locked Out, the ultimate solo virtual escape room experience! In this
 
 
 ## Link to deployed website
-Link Coming Soon
+[Link](https://lockedout.onrender.com/)
 
 ## Table of Contents (Optional)
 - [Installation](#installation)
