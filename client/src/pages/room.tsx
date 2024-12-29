@@ -127,54 +127,66 @@ const EscapeRoom: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+  
     // Ensure the answers are correct before submission
     const isCorrect = riddles.every((riddle, index) => {
       const answer = answers[`riddle${index + 1}`]?.toLowerCase();
       return answer === riddle.answer.toLowerCase();
     });
   
-    // Ensure roomId is a valid integer and userId is correct
     const roomIdString = roomId || '';
     const roomIdInt = parseInt(roomIdString, 10); // Convert roomId to integer
-  
-    // Ensure userId is set properly (userData or user.username)
     const userId = userData?.userId || user?.username;
   
-    // Debugging: log the values you're sending
-    console.log("Submitting attempt data...");
-    console.log("roomId:", roomIdInt);
-    console.log("userId:", userId);
-    console.log("isCorrect:", isCorrect);
-    
-    // Check for valid roomId
     if (isNaN(roomIdInt)) {
       alert("Invalid Room ID");
       return;
     }
   
-    // Ensure userId is set and valid
     if (!userId) {
       alert("User ID is missing or invalid.");
       return;
     }
   
     const attemptData = {
-      userId: userId, // Ensure userId is passed correctly
-      roomId: roomIdInt, // Ensure roomId is passed as integer
-      attemptNumber: 1,
+      userId: userId,
+      roomId: roomIdInt,
       isSuccessful: isCorrect,
       duration: 30, // Placeholder for duration
     };
   
-    // Debugging: log the full data object before submitting
-    console.log("Attempt Data: ", attemptData);
-  
     try {
-      // Send attempt data to backend
-      const response = await axios.post('/api/attempt', attemptData);
-      console.log('Attempt data submitted:', response.data);
-      
+      // Check if the user already has an attempt for the room
+      const existingAttemptResponse = await axios.get('/api/attempt', {
+        params: { userId, roomId: roomIdInt },
+      });
+  
+      const existingAttempt = existingAttemptResponse.data;
+  
+      if (existingAttempt) {
+        // Update the existing attempt
+        const updatedAttempt = {
+          ...attemptData,
+          attemptNumber: existingAttempt.attemptNumber + 1, // Increment attempt number
+        };
+  
+        const updateResponse = await axios.put(
+          `/api/attempt/${existingAttempt.id}`, // Assuming existing attempts have unique IDs
+          updatedAttempt
+        );
+  
+        console.log('Attempt updated:', updateResponse.data);
+      } else {
+        // Create a new attempt
+        const newAttempt = {
+          ...attemptData,
+          attemptNumber: 1,
+        };
+  
+        const createResponse = await axios.post('/api/attempt', newAttempt);
+        console.log('New attempt created:', createResponse.data);
+      }
+  
       if (isCorrect) {
         alert('You unlocked the lock!');
         setTimeout(() => {
@@ -184,9 +196,8 @@ const EscapeRoom: React.FC = () => {
         alert('Wrong answers. Try again!');
       }
     } catch (err) {
-      // Handle validation error from the server
       if (axios.isAxiosError(err)) {
-        console.error('Validation error from server:', err.response?.data || err.message);
+        console.error('Error from server:', err.response?.data || err.message);
         alert(`Error: ${err.response?.data?.message || err.message}`);
       } else {
         console.error('Unknown error:', err);

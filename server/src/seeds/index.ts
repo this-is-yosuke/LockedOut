@@ -3,6 +3,8 @@ import { seedDatabase } from './seed.js';
 import { QueryTypes } from 'sequelize';
 
 const seedAll = async () => {
+    console.log('Running seed script...');
+
     try {
         await sequelize.sync({ force: true });
         console.log('Database synced.');
