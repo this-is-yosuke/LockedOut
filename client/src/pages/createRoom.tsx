@@ -178,6 +178,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     riddles: [
       { content: formData.riddleOneText, answer: formData.riddleOneAnswer, name: formData.riddleOneName },
       { content: formData.riddleTwoText, answer: formData.riddleTwoAnswer, name: formData.riddleTwoName },
+      { content: formData.riddleThreeText, answer: formData.riddleThreeAnswer, name: formData.riddleThreeName },
+      { content: formData.riddleFourText, answer: formData.riddleFourAnswer, name: formData.riddleFourName },
     ],
   };
 
