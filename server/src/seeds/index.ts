@@ -1,39 +1,28 @@
 import sequelize from "../config/connection.js";
 import { seedDatabase } from './seed.js';
+import { QueryTypes } from 'sequelize';
 
-const seedAll = async (): Promise<void> => {
+const seedAll = async () => {
     try {
         await sequelize.sync({ force: true });
-        console.log(`\n DATABASE SYNCED \n`);
+        console.log('Database synced.');
 
-        // Dynamically fetch and drop existing constraints
-        await sequelize.query(`
-            DO $$
-            DECLARE
-                con_name text;
-            BEGIN
-                FOR con_name IN
-                    SELECT conname
-                    FROM pg_constraint
-                    WHERE conrelid = 'attempt'::regclass
-                    AND conname LIKE 'unique_%'
-                LOOP
-                    EXECUTE format('ALTER TABLE attempt DROP CONSTRAINT %I;', con_name);
-                END LOOP;
-            END $$;
-        `);
+        // Inspect constraints
+        const constraints = await sequelize.query(
+            `
+            SELECT conname, pg_get_constraintdef(oid) AS definition
+            FROM pg_constraint
+            WHERE conrelid = 'attempt'::regclass;
+            `,
+            { type: QueryTypes.SELECT } // Directly use the imported QueryTypes
+        );
 
-        // Log columns in the 'attempt' table for debugging
-        const [results] = await sequelize.query(`
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name = 'attempt';
-        `);
-        console.log('Columns:', results);
+        console.log('Existing Constraints on "attempt" table:', constraints);
 
-        // Seed the database
+        // Continue with seeding logic...
+        console.log('Seeding database...');
         await seedDatabase();
-        console.log(`\n Users seeded \n`);
+        console.log('Database seeded.');
 
         process.exit(0);
     } catch (error) {
