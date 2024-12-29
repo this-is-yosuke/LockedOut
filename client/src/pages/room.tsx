@@ -164,9 +164,9 @@ const EscapeRoom: React.FC = () => {
   
       const existingAttempt = existingAttemptResponse.data;
   
-      if (existingAttempt) {
-        // Update the existing attempt
-        console.log("attempt exsists, trying to edit current attempt");
+      if (existingAttempt && existingAttempt.id) {
+        // Update the existing attempt if it exists
+        console.log("Attempt exists, trying to edit current attempt");
         const updatedAttempt = {
           ...attemptData,
           attemptNumber: existingAttempt.attemptNumber + 1, // Increment attempt number
@@ -176,11 +176,10 @@ const EscapeRoom: React.FC = () => {
           `/api/attempt/${existingAttempt.id}`, // Assuming existing attempts have unique IDs
           updatedAttempt
         );
-  
         console.log('Attempt updated:', updateResponse.data);
       } else {
-        console.log("creating a new attempt");
-        // Create a new attempt
+        console.log("No existing attempt found, creating a new attempt");
+        // Create a new attempt if none exists
         const newAttempt = {
           ...attemptData,
           attemptNumber: 1,

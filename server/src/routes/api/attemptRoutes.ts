@@ -8,17 +8,21 @@ const router = express.Router();
 router.get('/', async (req: Request, res: Response) => {
     const { userId, roomId } = req.query;
 
-    // Validate and parse userId and roomId
-    const parsedUserId = parseInt(userId as string, 10);
-    const parsedRoomId = parseInt(roomId as string, 10);
+    // Ensure userId and roomId are strings and not arrays or objects
+    const userIdString = Array.isArray(userId) ? userId[0] : userId;
+    const roomIdString = Array.isArray(roomId) ? roomId[0] : roomId;
 
-    if (isNaN(parsedUserId) || isNaN(parsedRoomId)) {
-        return res.status(400).json({ error: 'Invalid userId or roomId. They must be numbers.' });
+    // Validate that userId and roomId are present and are strings
+    if (!userIdString || !roomIdString) {
+        return res.status(400).json({ error: 'Missing userId or roomId.' });
     }
 
     try {
         const attempt = await Attempt.findOne({
-            where: { userId: parsedUserId, roomId: parsedRoomId },
+            where: {
+                userId: userIdString, // Ensure these are strings
+                roomId: roomIdString,  // Ensure these are strings
+            },
         });
 
         if (attempt) {
