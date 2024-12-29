@@ -157,6 +157,7 @@ const EscapeRoom: React.FC = () => {
   
     try {
       // Check if the user already has an attempt for the room
+      console.log('Checking if user already has an attempt on this room:');
       const existingAttemptResponse = await axios.get('/api/attempt', {
         params: { userId, roomId: roomIdInt },
       });
@@ -165,6 +166,7 @@ const EscapeRoom: React.FC = () => {
   
       if (existingAttempt) {
         // Update the existing attempt
+        console.log("attempt exsists, trying to edit current attempt");
         const updatedAttempt = {
           ...attemptData,
           attemptNumber: existingAttempt.attemptNumber + 1, // Increment attempt number
@@ -177,6 +179,7 @@ const EscapeRoom: React.FC = () => {
   
         console.log('Attempt updated:', updateResponse.data);
       } else {
+        console.log("creating a new attempt");
         // Create a new attempt
         const newAttempt = {
           ...attemptData,

@@ -1,79 +1,79 @@
 import express from 'express';
+import { Attempt } from '../../models/index.js'; // Import your Attempt model
 import type { Request, Response } from 'express';
-import { Attempt, User, Room } from '../../models/index.js';
-import { ValidationError as SequelizeValidationError } from 'sequelize';
 
 const router = express.Router();
 
-// GET an Attempt by userId and roomId
-router.get('/attempt', async (req: Request, res: Response) => {
-    const userId = Number(req.query.userId); // Explicitly convert to number
-    const roomId = Number(req.query.roomId); // Explicitly convert to number
+// GET attempt by userId and roomId
+router.get('/', async (req: Request, res: Response) => {
+    const { userId, roomId } = req.query;
 
-    // Validate query parameters
-    if (isNaN(userId) || isNaN(roomId)) {
-        return res.status(400).json({ error: 'userId and roomId must be valid numbers' });
+    // Validate and parse userId and roomId
+    const parsedUserId = parseInt(userId as string, 10);
+    const parsedRoomId = parseInt(roomId as string, 10);
+
+    if (isNaN(parsedUserId) || isNaN(parsedRoomId)) {
+        return res.status(400).json({ error: 'Invalid userId or roomId. They must be numbers.' });
     }
 
     try {
         const attempt = await Attempt.findOne({
-            where: { userId, roomId },
-            include: [{ model: User }, { model: Room }],
+            where: { userId: parsedUserId, roomId: parsedRoomId },
         });
 
-        if (!attempt) {
-            return res.status(404).json({ error: 'No attempt found for this user and room' });
+        if (attempt) {
+            return res.status(200).json(attempt);
+        } else {
+            return res.status(404).json({ error: 'Attempt not found.' });
         }
-
-        return res.status(200).json(attempt);
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Error fetching attempt:', error);
+        return res.status(500).json({ error: 'Internal server error.' });
     }
 });
 
-// POST an attempt or update if it exists
+// POST create a new attempt
 router.post('/', async (req: Request, res: Response) => {
-    const { duration, attemptNumber, isSuccessful, roomId: roomIdRaw, userId: userIdRaw } = req.body;
+    const { userId, roomId, isSuccessful, duration, attemptNumber } = req.body;
 
-    const roomId = Number(roomIdRaw); // Explicitly convert to number
-    const userId = Number(userIdRaw); // Explicitly convert to number
-
-    // Validate body parameters
-    if (isNaN(userId) || isNaN(roomId)) {
-        return res.status(400).json({ error: 'userId and roomId must be valid numbers' });
+    // Validate input
+    if (!userId || !roomId || isSuccessful === undefined || !duration || !attemptNumber) {
+        return res.status(400).json({ error: 'Missing required fields.' });
     }
 
     try {
-        // Check if an attempt already exists
-        let attempt = await Attempt.findOne({ where: { userId, roomId } });
-
-        if (attempt) {
-            // Update the existing attempt
-            attempt = await attempt.update({
-                duration,
-                attemptNumber: attempt.attemptNumber + 1,
-                isSuccessful,
-            });
-            return res.status(200).json({ message: 'Attempt updated', attempt });
-        }
-
-        // Create a new attempt
+        // Attempt to create a new attempt record
         const newAttempt = await Attempt.create({
+            userId,
+            roomId,
+            isSuccessful,
             duration,
             attemptNumber,
-            isSuccessful,
-            roomId,
-            userId,
         });
 
-        return res.status(201).json({ message: 'Attempt created', attempt: newAttempt });
-    } catch (err: unknown) {
-        if (err instanceof SequelizeValidationError) {
-            return res.status(400).json({ message: 'Validation error', details: err.errors });
+        return res.status(201).json(newAttempt);
+    } catch (error) {
+        console.error('Error creating attempt:', error);
+
+        // Ensure a response is sent on error
+        return res.status(500).json({ error: 'Internal server error.' });
+    }
+});
+
+// PUT update an existing attempt
+router.put('/:id', async (req: Request, res: Response) => {
+    try {
+        const attempt = await Attempt.findByPk(req.params.id);
+
+        if (!attempt) {
+            return res.status(404).json({ error: 'Attempt not found.' });
         }
-        console.error(err);
-        return res.status(500).json({ message: 'Internal Server Error' });
+
+        await attempt.update(req.body);
+        return res.status(200).json(attempt);  // Ensure this path always returns a response
+    } catch (error) {
+        console.error('Error updating attempt:', error);
+        return res.status(500).json({ error: 'Internal server error.' });  // Ensure this path returns a response
     }
 });
 
