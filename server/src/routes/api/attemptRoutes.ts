@@ -55,7 +55,7 @@ router.post('/', async (req: Request, res: Response) => {
     try {
         console.log('Attempting to create an Attempt record...'); // Log before calling create
         const attempt = await Attempt.create(attemptData);
-        console.log('Attempt record created successfully:', attempt.toJSON()); // Log success
+        console.log('Attempt record created successful:', attempt.toJSON()); // Log success
         return res.status(201).json({ attempt }); // Send success response
     } catch (err: unknown) {
         console.error('Error occurred while creating Attempt:', err); // Log the raw error
