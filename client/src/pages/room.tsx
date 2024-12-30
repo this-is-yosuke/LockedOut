@@ -57,7 +57,6 @@ const CountdownTimer: React.FC<CountdownTimerProps> = ({ onTimeUp }) => {
   );
 };
 
-
 const EscapeRoom: React.FC = () => {
   const { user } = useUser(); // Access user data from context
   const { roomId }: { roomId?: string } = useParams();
@@ -72,26 +71,21 @@ const EscapeRoom: React.FC = () => {
   // Fetch user data from the backend using the username
   useEffect(() => {
     if (user?.token && user?.username) {
-      console.log('Fetching data for user:', user.username, 'token is', user.token);
-  
       axios
         .get('/api/users/getByUsername', {
           headers: {
             Authorization: `Bearer ${user.token}`,
           },
           params: {
-            username: user.username, // Pass the username as a query parameter
+            username: user.username,
           },
         })
         .then((response) => {
-          console.log('User data fetched successfully:', response.data);
           setUserData(response.data);
         })
         .catch((err) => {
-          console.error('Error fetching user data:', err); // No need to cast the error
+          console.error('Error fetching user data:', err);
         });
-    } else {
-      console.log('No token or username available, skipping user data fetch');
     }
   }, [user?.token, user?.username]);
 
@@ -106,9 +100,9 @@ const EscapeRoom: React.FC = () => {
     try {
       const response = await axios.get(`/api/riddles/room/${roomID}`);
       if (Array.isArray(response.data)) {
-        setRiddles(response.data);
+        setRiddles(response.data); // Set the riddles in the order fetched
       } else {
-        setRiddles([]); // If no riddles found for the room, set an empty array
+        setRiddles([]);
       }
       setLoading(false);
     } catch (err) {
@@ -157,7 +151,6 @@ const EscapeRoom: React.FC = () => {
   
     try {
       // Check if the user already has an attempt for the room
-      console.log('Checking if user already has an attempt on this room:');
       const existingAttemptResponse = await axios.get('/api/attempt', {
         params: { userId, roomId: roomIdInt },
       });
@@ -167,44 +160,36 @@ const EscapeRoom: React.FC = () => {
       if (existingAttempt && existingAttempt.id) {
         // Update the existing attempt if it exists
         console.log("Attempt exists, trying to edit current attempt");
+        
         const updatedAttempt = {
           ...attemptData,
           attemptNumber: existingAttempt.attemptNumber + 1, // Increment attempt number
         };
   
-        const updateResponse = await axios.put(
-          `/api/attempt/${existingAttempt.id}`, // Assuming existing attempts have unique IDs
+        await axios.put(
+          `/api/attempt/${existingAttempt.id}`,
           updatedAttempt
-        );
-        console.log('Attempt updated:', updateResponse.data);
+        ); // Removed variable assignment, no need to capture response
       } else {
-        console.log("No existing attempt found, creating a new attempt");
         // Create a new attempt if none exists
         const newAttempt = {
           ...attemptData,
           attemptNumber: 1,
         };
   
-        const createResponse = await axios.post('/api/attempt', newAttempt);
-        console.log('New attempt created:', createResponse.data);
+        await axios.post('/api/attempt', newAttempt); // Removed variable assignment, no need to capture response
       }
   
       if (isCorrect) {
         alert('You unlocked the lock!');
         setTimeout(() => {
           navigate('/'); // Redirect to home page after success
-        }, 1000); // Optional delay before redirect
+        }, 1000);
       } else {
         alert('Wrong answers. Try again!');
       }
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.error('Error from server:', err.response?.data || err.message);
-        alert(`Error: ${err.response?.data?.message || err.message}`);
-      } else {
-        console.error('Unknown error:', err);
-        alert('Unknown error occurred');
-      }
+      console.error('Error:', err);
     }
   };
 
@@ -222,6 +207,7 @@ const EscapeRoom: React.FC = () => {
     return <div className="error">{error}</div>;
   }
 
+  
   return (
     <>
       <Nav />
