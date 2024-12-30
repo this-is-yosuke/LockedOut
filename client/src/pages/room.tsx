@@ -100,7 +100,9 @@ const EscapeRoom: React.FC = () => {
     try {
       const response = await axios.get(`/api/riddles/room/${roomID}`);
       if (Array.isArray(response.data)) {
-        setRiddles(response.data); // Set the riddles in the order fetched
+        // Sort riddles by order (or another field like created_at)
+        const sortedRiddles = response.data.sort((a, b) => a.order - b.order); // Assuming `order` is a field
+        setRiddles(sortedRiddles);
       } else {
         setRiddles([]);
       }
@@ -237,21 +239,21 @@ const EscapeRoom: React.FC = () => {
               <div className="text-center">
                 <img src={Lock} alt="Lock" className="mx-auto max-h-32" />
               </div>
-
-              <form onSubmit={handleSubmit} className="flex justify-between mt-8">
-                {riddles.map((riddle, index) => (
-                  <input
-                    key={riddle.id}
-                    type="text"
-                    name={`riddle${index + 1}`}
-                    value={answers[`riddle${index + 1}`] || ''}
-                    onChange={handleInputChange}
-                    className="w-16 h-16 text-2xl text-center bg-stone-600 text-stone-100 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500"
-                    maxLength={1}
-                    placeholder={riddle.position.toString()}
-                  />
-                ))}
-              </form>
+              <form onSubmit={handleSubmit}>
+  {riddles.map((riddle, index) => (
+    <div key={riddle._id} className="riddle-container">
+      <label>{riddle.question}</label>
+      <input
+        type="text"
+        name={`riddle${index + 1}`}
+        value={answers[`riddle${index + 1}`] || ''}
+        onChange={handleInputChange}
+        placeholder="Your answer"
+      />
+    </div>
+  ))}
+  <button type="submit">Submit</button>
+</form>
 
               <div className="text-center mt-6">
                 <button
