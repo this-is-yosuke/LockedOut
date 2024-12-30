@@ -100,9 +100,7 @@ const EscapeRoom: React.FC = () => {
     try {
       const response = await axios.get(`/api/riddles/room/${roomID}`);
       if (Array.isArray(response.data)) {
-        // Sort riddles by position
-        const sortedRiddles = response.data.sort((a, b) => a.position - b.position); // Assuming `position` is the field
-        setRiddles(sortedRiddles);
+        setRiddles(response.data); // Set the riddles in the order fetched
       } else {
         setRiddles([]);
       }
@@ -209,7 +207,6 @@ const EscapeRoom: React.FC = () => {
     return <div className="error">{error}</div>;
   }
 
-  
   return (
     <>
       <Nav />
@@ -239,18 +236,21 @@ const EscapeRoom: React.FC = () => {
               <div className="text-center">
                 <img src={Lock} alt="Lock" className="mx-auto max-h-32" />
               </div>
+
               <form onSubmit={handleSubmit} className="space-y-4">
   {riddles.map((riddle, index) => (
     <div key={riddle._id} className="riddle-container">
-      <label className="text-lg font-medium text-white">{riddle.question}</label>
-      <input
-        type="text"
-        name={`riddle${index + 1}`}
-        value={answers[`riddle${index + 1}`] || ''}
-        onChange={handleInputChange}
-        placeholder="Your answer"
-        className="w-full p-3 mt-2 border border-gray-300 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
+      <div className="bg-white p-4 rounded-lg shadow-lg">
+        <label className="block text-lg font-medium text-gray-800">{riddle.question}</label>
+        <input
+          type="text"
+          name={`riddle${index + 1}`}
+          value={answers[`riddle${index + 1}`] || ''}
+          onChange={handleInputChange}
+          placeholder="Your answer"
+          className="w-full mt-2 p-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
     </div>
   ))}
 </form>
