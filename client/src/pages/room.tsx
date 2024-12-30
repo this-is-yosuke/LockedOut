@@ -239,20 +239,20 @@ const EscapeRoom: React.FC = () => {
               <div className="text-center">
                 <img src={Lock} alt="Lock" className="mx-auto max-h-32" />
               </div>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} className="space-y-4">
   {riddles.map((riddle, index) => (
     <div key={riddle._id} className="riddle-container">
-      <label>{riddle.question}</label>
+      <label className="text-lg font-medium text-white">{riddle.question}</label>
       <input
         type="text"
         name={`riddle${index + 1}`}
         value={answers[`riddle${index + 1}`] || ''}
         onChange={handleInputChange}
         placeholder="Your answer"
+        className="w-full p-3 mt-2 border border-gray-300 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
   ))}
-  <button type="submit">Submit</button>
 </form>
 
               <div className="text-center mt-6">
