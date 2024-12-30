@@ -100,8 +100,8 @@ const EscapeRoom: React.FC = () => {
     try {
       const response = await axios.get(`/api/riddles/room/${roomID}`);
       if (Array.isArray(response.data)) {
-        // Sort riddles by order (or another field like created_at)
-        const sortedRiddles = response.data.sort((a, b) => a.order - b.order); // Assuming `order` is a field
+        // Sort riddles by position
+        const sortedRiddles = response.data.sort((a, b) => a.position - b.position); // Assuming `position` is the field
         setRiddles(sortedRiddles);
       } else {
         setRiddles([]);
