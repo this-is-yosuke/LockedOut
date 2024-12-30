@@ -45,10 +45,13 @@ const MobileMenu: React.FC = () => {
         </>
       ) : (
         <>
-          {/* Show User's Name and Logout if the user is logged in */}
-          <span className="text-gray-300 block px-3 py-2 rounded-md text-base font-medium">
+          {/* Wrap the user's name in a Link to their profile */}
+          <Link
+            to={`/profile/${user.username}`}
+            className="text-gray-300 block px-3 py-2 rounded-md text-base font-medium"
+          >
             Welcome, {user.username}!
-          </span>
+          </Link>
           <button
             onClick={logout} // Call logout function when clicked
             className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
