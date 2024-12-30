@@ -45,10 +45,21 @@ const Try = () => {
   const fetchRandomRooms = async () => {
     setLoading(true);
     setRooms([]); // Reset rooms array
-    const randomIds = Array.from({ length: 3 }, () => Math.floor(Math.random() * 6) + 1);
+  
+    // Generate 3 unique random room IDs
+    const randomIds: number[] = [];
+    while (randomIds.length < 3) {
+      const randomId = Math.floor(Math.random() * 6) + 1; // Room ID between 1 and 6
+      if (!randomIds.includes(randomId)) { // Ensure no duplicates
+        randomIds.push(randomId);
+      }
+    }
+  
+    // Fetch rooms by the unique IDs
     for (let id of randomIds) {
       await fetchRoomById(id);
     }
+  
     setLoading(false);
   };
 
