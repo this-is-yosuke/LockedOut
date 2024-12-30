@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useUser } from '../contexts'; // Import the useUser hook
@@ -45,13 +46,14 @@ const MobileMenu: React.FC = () => {
         </>
       ) : (
         <>
-          {/* Wrap the user's name in a Link to their profile */}
+          {/* Link to user's profile page */}
           <Link
-            to={`/profile/${user.username}`}
+            to={`/user/${user.username}`} // Link to the user's profile page
             className="text-gray-300 block px-3 py-2 rounded-md text-base font-medium"
           >
             Welcome, {user.username}!
           </Link>
+
           <button
             onClick={logout} // Call logout function when clicked
             className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
