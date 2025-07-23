@@ -5,6 +5,18 @@ import { User, Room } from '../../models/index.js';
 const router = express.Router();
 
 // Get all users
+router.get('/', async (_req: Request, res: Response) => {
+    try{
+        const users = await User.findAll({
+            attributes: {exclude: ['password']}
+        });
+        res.json(users);
+    }catch(error: any){
+        res.status(500).json({message: error.message});
+    }
+})
+
+// Get User by Username
 router.get('/getByUsername', async (req: Request, res: Response) => {
     const username = req.query.username;
 
