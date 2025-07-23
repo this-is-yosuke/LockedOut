@@ -10,10 +10,10 @@ import { riddleRouter } from './routes/api/riddleRoutes.js'; // Import the riddl
 import { attemptRouter } from './routes/api/attemptRoutes.js';
 import Router from './routes/auth.routes.js';
 import cors from 'cors';
-
+import path from 'path';
 const app = express();
 const PORT = process.env.PORT || 3001;
-const path = require('path');
+// const path = require('path');
 
 // Conditionally set `force` based on NODE_ENV (e.g., development vs production)
 const forceDatabaseRefresh = process.env.NODE_ENV === 'development';  // true in development, false in production
