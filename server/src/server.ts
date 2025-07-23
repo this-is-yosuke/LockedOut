@@ -13,6 +13,7 @@ import cors from 'cors';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const path = require('path');
 
 // Conditionally set `force` based on NODE_ENV (e.g., development vs production)
 const forceDatabaseRefresh = process.env.NODE_ENV === 'development';  // true in development, false in production
@@ -31,7 +32,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Serve static files from the client
-app.use(express.static('../client/dist'));
+// app.use(express.static('../client/dist'));
+app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
 // Adding an app.use(routes) to resolve a "CANNOT GET/" error on Render
 app.use(routes);
