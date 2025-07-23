@@ -33,6 +33,9 @@ app.use(express.json());
 // Serve static files from the client
 app.use(express.static('../client/dist'));
 
+// Adding an app.use(routes) to resolve a "CANNOT GET/" error on Render
+app.use(routes);
+
 // Routes
 app.use('/api/rooms', roomRouter); // Add room routes
 app.use('/api/riddles', riddleRouter); // Add riddle routes
