@@ -11,6 +11,11 @@ import { attemptRouter } from './routes/api/attemptRoutes.js';
 import Router from './routes/auth.routes.js';
 import cors from 'cors';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const _filename = fileURLToPath(import.meta.url);
+const _dirname = path.dirname(_filename);
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 // const path = require('path');
@@ -33,7 +38,7 @@ app.use(express.json());
 
 // Serve static files from the client
 // app.use(express.static('../client/dist'));
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
+app.use(express.static(path.join(_dirname, '..', 'client', 'dist')));
 
 // Adding an app.use(routes) to resolve a "CANNOT GET/" error on Render
 app.use(routes);
