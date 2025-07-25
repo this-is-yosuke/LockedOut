@@ -53,7 +53,7 @@ app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
 // Catch-all handler to return React app for non-API routes
 app.get('*', (_, res) => {
-  res.sendFile(path.join(_dirname, '..', 'client', 'dist', 'index.html'));
+  res.sendFile(path.join(_dirname, '..', 'client', 'dist'));
 });
 
 // Sync database and start the server
