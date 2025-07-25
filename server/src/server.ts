@@ -16,6 +16,8 @@ import { fileURLToPath } from 'url';
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = path.dirname(_filename);
 
+console.log(`This is _dirname: ${_dirname}. This is _filename: ${_filename}`);
+
 const app = express();
 const PORT = process.env.PORT || 3001;
 // const path = require('path');
