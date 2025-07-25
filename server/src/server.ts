@@ -51,6 +51,11 @@ app.use('/auth', Router);
 app.use('/api/users', userRouter);  // Ensure this line is present!
 app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
+// Catch-all handler to return React app for non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(_dirname, '..', 'client', 'dist', 'index.html'));
+});
+
 // Sync database and start the server
 sequelize.sync({ force: forceDatabaseRefresh })  // Only force refresh in development
   .then(() => {
