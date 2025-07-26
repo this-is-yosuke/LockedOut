@@ -13,10 +13,10 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const _filename = fileURLToPath(import.meta.url);
-const _dirname = path.dirname(_filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-console.log(`This is _dirname: ${_dirname}. This is _filename: ${_filename}`);
+// console.log(`This is _dirname: ${_dirname}. This is _filename: ${_filename}`);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -54,9 +54,9 @@ app.use('/api/users', userRouter);  // Ensure this line is present!
 app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
 // Catch-all handler to return React app for non-API routes
-// app.get('*', (_, res) => {
-//   res.sendFile(path.join(_dirname, '..', 'client', 'dist'));
-// });
+app.get('*', (_, res) => {
+  res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+});
 
 // Sync database and start the server
 sequelize.sync({ force: forceDatabaseRefresh })  // Only force refresh in development
