@@ -39,8 +39,8 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // Serve static files from the client
-// app.use(express.static('../client/dist'));
-app.use(express.static(path.join(_dirname, '..', 'client', 'dist')));
+app.use(express.static('../client/dist'));
+// app.use(express.static(path.join(_dirname, '..', 'client', 'dist')));
 
 // Adding an app.use(routes) to resolve a "CANNOT GET/" error on Render
 app.use(routes);
@@ -54,9 +54,9 @@ app.use('/api/users', userRouter);  // Ensure this line is present!
 app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
 // Catch-all handler to return React app for non-API routes
-app.get('*', (_, res) => {
-  res.sendFile(path.join(_dirname, '..', 'client', 'dist'));
-});
+// app.get('*', (_, res) => {
+//   res.sendFile(path.join(_dirname, '..', 'client', 'dist'));
+// });
 
 // Sync database and start the server
 sequelize.sync({ force: forceDatabaseRefresh })  // Only force refresh in development
