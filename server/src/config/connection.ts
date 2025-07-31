@@ -12,10 +12,10 @@ const dbUrl = new URL(process.env.DATABASE_URL!);  // Ensure DATABASE_URL is set
 const sequelize = new Sequelize(dbUrl.href, {
     dialect: 'postgres',
     dialectOptions: {
-      ssl: {
-        require: true,  // Ensure SSL is required
-        rejectUnauthorized: false,  // Set to false for self-signed certificates
-      },
+      // ssl: {
+      //   require: false,  // Ensure SSL is required
+      //   rejectUnauthorized: false,  // Set to false for self-signed certificates
+      // },
     },
     logging: console.log, // Enable Sequelize logging to console
   });
