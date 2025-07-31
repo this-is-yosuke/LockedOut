@@ -12,6 +12,7 @@ import Router from './routes/auth.routes.js';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Request, Response } from 'express';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -54,7 +55,7 @@ app.use('/api/users', userRouter);  // Ensure this line is present!
 app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
 // Catch-all handler to return React app for non-API routes
-app.get('*', (_, res) => {
+app.get('*', (_req: Request, res: Response) => {
   res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
 });
 
