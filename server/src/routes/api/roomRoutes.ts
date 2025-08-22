@@ -10,8 +10,8 @@ router.get('/', async (_req: Request, res: Response) => {
     try {
         const rooms = await Room.findAll({
             include: [
-                { model: User, as: 'roomsCreated/Creator' }, // Adjusted alias to match model definition
-                { model: User}, // Example alias for participants, adjust as necessary
+                { model: User, as: 'creator' }, // Adjusted alias to match model definition
+                { model: User, as: 'player'}, // Example alias for participants, adjust as necessary
                 { model: Riddle, as: 'riddles' } // Ensure alias matches model definition
             ],
         });
