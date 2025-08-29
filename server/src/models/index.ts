@@ -16,25 +16,28 @@ const Attempt = AttemptFactory(sequelize);
    SUCH THAT when I query USERS, completed room IDs show up. When I query ROOMS, I can see all
    USERS who completed it. */
 
+//    The 1-to-many association between User(Creator) and Room
    User.hasMany(Room, {
     foreignKey: 'creatorID', // The foreign key in the Room model referring to the User model
     as: 'roomsCreated', // Alias for rooms created by the user
   });
   
+  Room.belongsTo(User, { 
+      foreignKey: 'creatorID', // Room creator
+      as: 'Creator'
+  });
+
+//   The Many-to-many association between User(Player) and Room
   User.belongsToMany(Room, {
     through: 'Attempt', // Junction table for the many-to-many relationship
     foreignKey: 'userId',
     as: 'roomsCompleted', // Alias for rooms completed by the user
   });
 
-Room.belongsTo(User, { 
-    foreignKey: 'creatorID', // Room creator
-    as: 'Creator' 
-});
-
 Room.belongsToMany(User, {
     through: 'Attempt',
-    foreignKey: 'roomId'
+    foreignKey: 'roomId',
+    as: 'Player',
 });
 
 // A single room has many riddles
