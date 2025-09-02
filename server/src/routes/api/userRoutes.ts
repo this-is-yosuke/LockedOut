@@ -65,7 +65,7 @@ router.get('/:id', async (req: Request, res: Response) => {
         const user = await User.findByPk(id, {
             include: [
                 // These lines of code are causing the 500 error
-                { model: Room, as: 'rooms' }, // Alias for the rooms the user has participated in
+                { model: Room, as: 'roomsCompleted' }, // Alias for the rooms the user has participated in
                 { model: Room, as: 'roomsCreated' } // Alias for the rooms the user has created
                 // -----------
             ],
