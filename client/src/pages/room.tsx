@@ -151,7 +151,7 @@ const EscapeRoom: React.FC = () => {
   
     try {
       // Check if the user already has an attempt for the room
-      const existingAttemptResponse = await axios.get('/api/attempt', {
+      const existingAttemptResponse = await axios.get('/api/attempts', {
         params: { userId, roomId: roomIdInt },
       });
   
