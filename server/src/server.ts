@@ -17,11 +17,14 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url); //server.ts
-const __dirname = path.dirname(__filename); //src directory
-const projectRoot = path.join(__dirname, "../client");
+const __filename = fileURLToPath(import.meta.url); // LockedOut\server\dist\server.js
+const __dirname = path.dirname(__filename); // LockedOut\server\dist
+// const projectRoot = path.join(__dirname, "../client");
 
-// console.log(`This is _dirname: ${_dirname}. This is _filename: ${_filename}`);
+// Point to client/dist explicitly
+const clientDistPath = path.join(__dirname, "../client/dist");
+
+// console.log(`This is _dirname: ${__dirname}. This is _filename: ${__filename}. This is projectRoot: ${projectRoot}.`);
 
 // const _dirname = path.resolve();
 const PORT = process.env.PORT || 3001;
@@ -49,7 +52,10 @@ app.use(express.json());
 // app.use(express.static(path.join(_dirname, "dist")));
 
 // Serve static files from ../dist
-app.use(express.static(path.join(projectRoot, "dist")));
+// app.use(express.static(path.join(projectRoot, "dist")));
+
+// Serve static files from client/dist
+app.use(express.static(clientDistPath));
 
 // Adding an app.use(routes) to resolve a "CANNOT GET/" error on Render
 app.use(routes);
@@ -71,8 +77,13 @@ app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 // });
 
 // SPA fallback
+// app.get("*", (_, res) => {
+//   res.sendFile(path.join(projectRoot, "dist", "index.html"));
+// });
+
+// 2nd SPA fallback
 app.get("*", (_, res) => {
-  res.sendFile(path.join(projectRoot, "dist", "index.html"));
+  res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
 // Sync database and start the server
