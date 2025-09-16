@@ -60,7 +60,7 @@ app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 // app.get('*', (_req: Request, res: Response) => {
 //   res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
 // });
-app.get("*", (req, res) => {
+app.get("*", (_, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
