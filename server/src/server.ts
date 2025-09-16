@@ -17,9 +17,9 @@ import { fileURLToPath } from 'url';
 
 const app = express();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const projectRoot = path.join(__dirname, "..");
+const __filename = fileURLToPath(import.meta.url); //server.ts
+const __dirname = path.dirname(__filename); //src directory
+const projectRoot = path.join(__dirname, "../client");
 
 // console.log(`This is _dirname: ${_dirname}. This is _filename: ${_filename}`);
 
