@@ -57,8 +57,11 @@ app.use('/api/users', userRouter);  // Ensure this line is present!
 app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
 // Catch-all handler to return React app for non-API routes
-app.get('*', (_req: Request, res: Response) => {
-  res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+// app.get('*', (_req: Request, res: Response) => {
+//   res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
+// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "dist", "index.html"));
 });
 
 // Sync database and start the server
