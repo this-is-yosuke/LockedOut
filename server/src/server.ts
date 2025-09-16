@@ -23,7 +23,7 @@ const projectRoot = path.join(__dirname, "..");
 
 // console.log(`This is _dirname: ${_dirname}. This is _filename: ${_filename}`);
 
-const _dirname = path.resolve();
+// const _dirname = path.resolve();
 const PORT = process.env.PORT || 3001;
 // const path = require('path');
 
