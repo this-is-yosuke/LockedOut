@@ -61,7 +61,7 @@ app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 //   res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
 // });
 app.get("*", (_, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
+  res.sendFile(path.join(_dirname, "dist", "index.html"));
 });
 
 // Sync database and start the server
