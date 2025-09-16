@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename); // LockedOut\server\dist
 // const projectRoot = path.join(__dirname, "../client");
 
 // Point to client/dist explicitly
-const clientDistPath = path.resolve(__dirname, "../client/dist");
+const clientDistPath = path.resolve(__dirname, "../../client/dist");
 
 // console.log(`This is _dirname: ${__dirname}. This is _filename: ${__filename}. This is projectRoot: ${projectRoot}.`);
 
