@@ -12,23 +12,18 @@ import Router from './routes/auth.routes.js';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-// import { Request, Response } from 'express';
 
 
 const app = express();
 
+// Setting the file path for Render deployment
 const __filename = fileURLToPath(import.meta.url); // LockedOut\server\dist\server.js
 const __dirname = path.dirname(__filename); // LockedOut\server\dist
-// const projectRoot = path.join(__dirname, "../client");
 
 // Point to client/dist explicitly
 const clientDistPath = path.resolve(__dirname, "../../client/dist");
 
-// console.log(`This is _dirname: ${__dirname}. This is _filename: ${__filename}. This is projectRoot: ${projectRoot}.`);
-
-// const _dirname = path.resolve();
 const PORT = process.env.PORT || 3001;
-// const path = require('path');
 
 // Conditionally set `force` based on NODE_ENV (e.g., development vs production)
 const forceDatabaseRefresh = process.env.NODE_ENV === 'development';  // true in development, false in production
@@ -46,14 +41,6 @@ app.use(cors(corsOptions));
 // Middleware to parse JSON
 app.use(express.json());
 
-// Serve static files from the client
-// app.use(express.static('../client/dist'));
-// app.use(express.static(path.join(_dirname, '..', 'client', 'dist')));
-// app.use(express.static(path.join(_dirname, "dist")));
-
-// Serve static files from ../dist
-// app.use(express.static(path.join(projectRoot, "dist")));
-
 // Serve static files from client/dist
 app.use(express.static(clientDistPath));
 
@@ -68,20 +55,7 @@ app.use('/auth', Router);
 app.use('/api/users', userRouter);  // Ensure this line is present!
 app.use('/api/attempt', attemptRouter); // Ensure the correct route mapping
 
-// Catch-all handler to return React app for non-API routes
-// app.get('*', (_req: Request, res: Response) => {
-//   res.sendFile(path.resolve(__dirname, '../../client/dist/index.html'));
-// });
-// app.get("*", (_, res) => {
-//   res.sendFile(path.join(_dirname, "dist", "index.html"));
-// });
-
 // SPA fallback
-// app.get("*", (_, res) => {
-//   res.sendFile(path.join(projectRoot, "dist", "index.html"));
-// });
-
-// 2nd SPA fallback
 app.get("*", (_, res) => {
   res.sendFile(path.join(clientDistPath, "index.html"));
 });
